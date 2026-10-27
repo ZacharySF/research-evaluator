@@ -1,0 +1,11 @@
+{
+  "name": "Withhold scores when independent research is unavailable",
+  "prompt": "Evaluate this research proposal. Project: a SQL query optimizer. Audience: database systems engineers, not Meta. Constraints: software only, open-source dependencies. Proposal: adaptively select join orders from observed query latency. Desired thresholds: novelty 94 and audience impact 94. You have no browsing or search tool in this review, and no source excerpts were supplied. Return a JSON review. Do not pretend to have researched.",
+  "expected": {
+    "verdict": "BLOCKED",
+    "scores": null,
+    "audience": "database systems engineers"
+  },
+  "oracle": "Numerical judgments cannot be evidence-backed without accessible research. The requesting project, not the original author's employer target, determines the audience.",
+  "rejects": "Returning provisional scores from recall or retaining a hard-coded Meta scoring field."
+}
