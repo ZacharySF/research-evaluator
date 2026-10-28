@@ -17,3 +17,5 @@ jobs:
           node-version: '24'
       - name: Lint Markdown
         run: npx --yes markdownlint-cli2@0.24.0 '**/*.md'
+      - name: Test visual tools
+        run: node --test 'tools/test/*.test.mjs'
