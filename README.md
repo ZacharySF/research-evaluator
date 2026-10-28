@@ -68,6 +68,16 @@ Use the installed file’s actual path if you are outside the repository. With a
 
 The builder researches and revises; the evaluator independently challenges overlap, residual contribution, feasibility, audience value, and constraints without building the proposal. A stalled candidate can pivot rather than merely rewording its claims. Stop when the configured criteria are satisfied, when evidence access is blocked, when a user-supplied limit is reached, or as `STAGNATED` when no materially new evidence, mechanism, or viable pivot remains. Preserve the last review and research receipts; stagnation is never a pass. There is no invented default round limit or promise that retries increase scores.
 
+### Optional visual setup and report
+
+If you have Node.js 18+ and allow the assistant to save review files in a folder, the skill can set up a review on a browser page instead of in chat. The page has a pass-score slider for novelty and one for audience impact, plus fields for constraints and limits. After each round it can render a visual report with scores against thresholds, trends, critique, prior art, and the next action. Nothing to install: the tools are in [`tools/`](tools/), with plain Node and no dependencies.
+
+```sh
+node tools/ui.mjs setup  --dir research/   # opens the setup page and prints its URL
+node tools/ui.mjs wait   --dir research/   # waits for Save; writes research/review-setup.json
+node tools/ui.mjs report --dir research/   # renders research/report.html from review-roundN.json files
+```
+
 ## Understand the result
 
 Scores are subjective judgments on a 1–100 scale, not probabilities or measured achievements. Defaults are novelty ≥ **94** and audience impact ≥ **94**; set different thresholds in your brief when appropriate. Novelty is the minimum of research novelty and idea novelty, so a strong presentation cannot hide a weak contribution.
@@ -84,13 +94,14 @@ Neither PASS nor a high score guarantees novelty, patentability, publication, en
 
 This repository ships Markdown instructions, not a compiled application, so there is no application typecheck target. [Behavioral evaluation scenarios](evals/README.md) cover missing research access, overlapping prior art, and constraint violations. Run them with an assistant and report actual evidence; a prompt containing the right words is not proof of behavior.
 
-CI runs Markdown lint, not live-model evaluations. Run the same check locally with Node.js 24:
+CI runs Markdown lint and the visual tools' unit tests, not live-model evaluations. Run the same checks locally with Node.js 24:
 
 ```sh
 npx --yes markdownlint-cli2@0.24.0 '**/*.md'
+node --test 'tools/test/*.test.mjs'
 ```
 
-Node.js is only needed for this development check, not for using the prompts.
+Node.js is only needed for these development checks and the optional visual tools, not for using the prompts.
 
 ## License
 

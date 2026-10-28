@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Set up the research review</title>
+<style>
+/*BASE_CSS*/
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start;margin-top:28px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}.aside{position:static!important}}
+.step{margin-bottom:20px}
+.step-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:750;font-size:14px;color:#fff;
+background:linear-gradient(135deg,var(--accent),var(--accent2));flex:none}
+.step-head h2{font-size:19px}.step-head p{margin:2px 0 0;color:var(--muted);font-size:13.5px}
+label.f{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
+label.f span{font-weight:400;color:var(--muted)}
+input[type=text],textarea{width:100%;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:12px;
+padding:11px 13px;font:inherit;outline:none;transition:border-color .15s,box-shadow .15s}
+textarea{resize:vertical;min-height:64px}
+input[type=text]:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.goal{font-size:18px;min-height:76px}
+.gate{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;background:var(--panel2)}
+.gate b{font-size:16px}.gate small{display:block;color:var(--muted)}
+.dial{display:flex;align-items:center;gap:16px;margin:16px 0 4px}
+.big{font-size:40px;font-weight:780;letter-spacing:-.03em;min-width:72px;text-align:center;color:var(--z);font-variant-numeric:tabular-nums;line-height:1}
+.dial-mid{flex:1}
+.zone{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.zone .pill{color:var(--z)}.zone small{color:var(--muted)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:99px;outline:none;cursor:pointer;margin:0;
+background:linear-gradient(90deg,#60a5fa55 0 69%,#34d39955 69% 84%,#fbbf2455 84% 93%,#c084fc66 93% 100%)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:4px solid var(--z);
+box-shadow:0 2px 10px #0007,0 0 0 6px color-mix(in srgb,var(--z) 22%,transparent);transition:transform .1s}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:4px solid var(--z);box-shadow:0 2px 10px #0007,0 0 0 6px color-mix(in srgb,var(--z) 22%,transparent)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.15)}
+input[type=range]:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.ticks{position:relative;height:18px;font-size:11px;color:var(--muted);margin-top:6px}
+.ticks span{position:absolute;transform:translateX(-50%);cursor:pointer}.ticks span:hover{color:var(--fg)}
+input.exact{width:64px;text-align:center;padding:6px;font-weight:650;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:10px;font:inherit}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 8px 6px 12px;border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,var(--panel2));border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));font-size:13.5px}
+.chip button{background:none;border:0;color:var(--muted);cursor:pointer;font-size:15px;line-height:1}
+.sugg{background:none;border:1px dashed var(--line);color:var(--muted);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}.sugg:hover{color:var(--fg);border-color:var(--accent)}
+.aside{position:sticky;top:20px}
+.aside h3{font-size:15px;margin-bottom:12px}
+.sum-goal{font-weight:650;margin-bottom:14px;word-break:break-word}
+.sum-goal.empty{color:var(--muted);font-weight:400;font-style:italic}
+.sum-row{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;margin:9px 0 4px}
+.sum-row b{color:var(--z);font-variant-numeric:tabular-nums}
+.mini{height:6px;border-radius:99px;background:var(--panel2);overflow:hidden}.mini i{display:block;height:100%;border-radius:99px;background:var(--z)}
+.rule{margin:16px 0;padding:12px;border-radius:12px;background:var(--panel2);font-size:13px;color:var(--muted)}
+.err{display:none;margin-bottom:12px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--bad) 14%,transparent);border:1px solid color-mix(in srgb,var(--bad) 45%,transparent);font-size:13.5px}
+.go{width:100%;padding:14px;border:0;border-radius:14px;font:inherit;font-weight:700;font-size:15px;color:#fff;cursor:pointer;
+background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent2) 70%,var(--accent)));box-shadow:0 10px 24px -12px var(--accent);transition:transform .1s,filter .15s}
+.go:hover{filter:brightness(1.08)}.go:active{transform:translateY(1px)}.go:disabled{opacity:.6;cursor:wait}
+.cancel{display:block;margin:10px auto 0;background:none;border:0;color:var(--muted);font:inherit;font-size:13px;cursor:pointer}.cancel:hover{color:var(--fg)}
+.done{position:fixed;inset:0;display:none;place-items:center;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(6px);z-index:10}
+.done .card{text-align:center;max-width:440px;padding:36px}
+.done .tick{width:64px;height:64px;border-radius:50%;margin:0 auto 16px;display:grid;place-items:center;font-size:30px;color:#fff;background:linear-gradient(135deg,var(--ok),var(--accent2))}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="eyebrow">Research evaluator</div>
+  <h1 class="title">Set up your research review</h1>
+  <p class="lede">Say what the research should achieve and how strict the independent reviewer is. The builder keeps researching and revising until both scores clear their bar, the evidence runs out, or your limits are reached.</p>
+
+  <div class="layout">
+    <div>
+      <section class="card step">
+        <div class="step-head"><div class="num">1</div><div><h2>What should the research achieve?</h2><p>The goal and who the result has to matter to.</p></div></div>
+        <label class="f" for="goal">Goal</label>
+        <textarea id="goal" class="goal" placeholder="e.g. A new way to track eye gaze on glasses that needs no new hardware"></textarea>
+        <label class="f" for="audience">Audience <span>(optional; the reviewer picks a domain audience and says so if empty)</span></label>
+        <input type="text" id="audience" placeholder="e.g. Wearables researchers at a major lab">
+      </section>
+
+      <section class="card step">
+        <div class="step-head"><div class="num">2</div><div><h2>How strict is the reviewer?</h2><p>Drag each slider to the score a proposal needs to pass. The default is 94.</p></div></div>
+        <div id="gates"></div>
+      </section>
+
+      <section class="card step">
+        <div class="step-head"><div class="num">3</div><div><h2>Ground rules</h2><p>Constraints that can't be broken, and when to stop.</p></div></div>
+        <label class="f" for="cin">Constraints <span>(a proposal that breaks one can never pass)</span></label>
+        <input type="text" id="cin" placeholder="Type one and press Enter">
+        <div class="chips" id="chips"></div>
+        <div class="chips" id="sugg"></div>
+        <label class="f" for="limits">Limits <span>(optional; no limit is invented if empty)</span></label>
+        <input type="text" id="limits" placeholder="e.g. At most 5 rounds, or stop after 2 hours">
+      </section>
+    </div>
+
+    <aside class="aside card">
+      <h3>At a glance</h3>
+      <div class="sum-goal" id="s-goal"></div>
+      <div id="s-gates"></div>
+      <div class="rule" id="s-rule"></div>
+      <div class="err" id="err"></div>
+      <button class="go" id="save">Save setup</button>
+      <button class="cancel" id="cancel">Cancel setup</button>
+    </aside>
+  </div>
+</main>
+
+<div class="done" id="done"><div class="card"><div class="tick" id="d-icon">✓</div><h2 id="d-title">Setup saved</h2><p class="muted" id="d-text">You can close this tab. Your assistant takes it from here.</p></div></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const SUGGESTIONS = ["No new hardware", "Open-source licenses only", "Public datasets only", "Must run on a phone"];
+let ZONES = [], GATES = [];
+const S = { thresholds: {}, constraints: [] };
+const zoneOf = (t) => ZONES.find((z) => t >= z.min) || ZONES[ZONES.length - 1];
+
+function renderGates() {
+  $("#gates").innerHTML = GATES.map((g) => {
+    const t = S.thresholds[g.key]; const z = zoneOf(t);
+    return `<div class="gate" style="--z:${z.color}" data-key="${g.key}">
+  <b>${esc(g.name)}</b><small>${esc(g.hint)}</small>
+  <div class="dial">
+    <div class="big" data-big>${t}</div>
+    <div class="dial-mid">
+      <div class="zone"><span class="pill" data-zl>${z.label}</span><small data-zm>${esc(z.means)}</small></div>
+      <input type="range" min="1" max="100" step="1" value="${t}" aria-label="${esc(g.name)} pass score">
+      <div class="ticks">${[50, 70, 85, 94].map((v) => `<span style="left:${v - 0.5}%" data-tick="${v}">${v}</span>`).join("")}</div>
+    </div>
+    <input class="exact" type="number" min="1" max="100" value="${t}" aria-label="exact ${esc(g.name)} score">
+  </div>
+</div>`;
+  }).join("");
+}
+
+// Repaint one card in place while sliding, so the slider keeps focus.
+function paint(card) {
+  const t = S.thresholds[card.dataset.key]; const z = zoneOf(t);
+  card.style.setProperty("--z", z.color);
+  card.querySelector("[data-big]").textContent = t;
+  card.querySelector("[data-zl]").textContent = z.label;
+  card.querySelector("[data-zm]").textContent = z.means;
+  card.querySelectorAll("input").forEach((el) => { if (document.activeElement !== el) el.value = t; });
+}
+
+function renderRules() {
+  $("#chips").innerHTML = S.constraints.map((c, i) => `<span class="chip">${esc(c)}<button data-rm="${i}" title="Remove">×</button></span>`).join("");
+  $("#sugg").innerHTML = SUGGESTIONS.filter((x) => !S.constraints.includes(x)).map((x) => `<button class="sugg" data-add="${esc(x)}">+ ${esc(x)}</button>`).join("");
+}
+
+function renderSummary() {
+  const goal = $("#goal").value.trim();
+  $("#s-goal").textContent = goal || "No goal yet";
+  $("#s-goal").classList.toggle("empty", !goal);
+  $("#s-gates").innerHTML = GATES.map((g) => {
+    const t = S.thresholds[g.key]; const z = zoneOf(t);
+    return `<div style="--z:${z.color}"><div class="sum-row"><span>${esc(g.name)}</span><b>${t}</b></div><div class="mini"><i style="width:${t}%"></i></div></div>`;
+  }).join("");
+  const n = S.constraints.length; const limits = $("#limits").value.trim();
+  $("#s-rule").innerHTML = `Passes when <b>both scores</b> clear their bar${n ? ` and all <b>${n} constraint${n === 1 ? "" : "s"}</b> are met` : ""}, backed by fresh evidence. ${limits ? `Stops at: ${esc(limits)}.` : "No round limit; it stops when progress stalls."}`;
+}
+
+$("#gates").addEventListener("input", (ev) => {
+  const card = ev.target.closest(".gate"); if (!card) return;
+  const v = Math.round(Number(ev.target.value)); if (!Number.isFinite(v)) return;
+  S.thresholds[card.dataset.key] = Math.min(100, Math.max(1, v));
+  paint(card); renderSummary();
+});
+$("#gates").addEventListener("click", (ev) => {
+  const card = ev.target.closest(".gate");
+  if (card && ev.target.dataset.tick) { S.thresholds[card.dataset.key] = +ev.target.dataset.tick; paint(card); renderSummary(); }
+});
+const addConstraint = (c) => { c = c.trim(); if (c && !S.constraints.includes(c)) S.constraints.push(c); renderRules(); renderSummary(); };
+$("#cin").addEventListener("keydown", (ev) => { if (ev.key === "Enter") { ev.preventDefault(); addConstraint(ev.target.value); ev.target.value = ""; } });
+$("#chips").onclick = (ev) => { if (ev.target.dataset.rm) { S.constraints.splice(+ev.target.dataset.rm, 1); renderRules(); renderSummary(); } };
+$("#sugg").onclick = (ev) => { if (ev.target.dataset.add) addConstraint(ev.target.dataset.add); };
+$("#goal").addEventListener("input", renderSummary);
+$("#limits").addEventListener("input", renderSummary);
+
+function showError(msg) { const e = $("#err"); e.textContent = msg; e.style.display = msg ? "block" : "none"; }
+async function post(path, body) {
+  const r = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || `request failed (${r.status})`);
+  return j;
+}
+function finish(title, text, icon) {
+  $("#d-title").textContent = title; $("#d-text").textContent = text; $("#d-icon").textContent = icon;
+  $("#done").style.display = "grid";
+}
+$("#save").onclick = async () => {
+  const pending = $("#cin").value.trim(); if (pending) { addConstraint(pending); $("#cin").value = ""; }
+  showError(""); $("#save").disabled = true;
+  try {
+    await post("/api/save", { goal: $("#goal").value, audience: $("#audience").value, thresholds: S.thresholds, constraints: S.constraints, limits: $("#limits").value });
+    finish("Setup saved", "You can close this tab. Your assistant takes it from here.", "✓");
+  } catch (err) { showError(err.message); } finally { $("#save").disabled = false; }
+};
+$("#cancel").onclick = async () => {
+  if (!confirm("Cancel setup? Nothing will be saved.")) return;
+  try { await post("/api/cancel", {}); } catch {}
+  finish("Setup cancelled", "Nothing was saved. You can close this tab.", "×");
+};
+
+(async () => {
+  const init = await (await fetch("/api/init")).json();
+  ZONES = init.zones; GATES = init.gates;
+  const s = init.setup; const p = init.prefill || {};
+  $("#goal").value = s?.goal ?? p.goal ?? "";
+  $("#audience").value = s?.audience ?? p.audience ?? "";
+  $("#limits").value = s?.limits ?? "";
+  S.constraints = s?.constraints ? [...s.constraints] : [];
+  for (const g of GATES) S.thresholds[g.key] = s?.thresholds?.[g.key] ?? 94;
+  renderGates(); renderRules(); renderSummary();
+  if (!$("#goal").value) $("#goal").focus();
+})();
+</script>
+</body>
+</html>
