@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "title": "Research atlas — fresh loop",
+    "updated": "not started",
+    "goal": "Goal and audience not configured; load the authorized review packet before researching.",
+    "standing": "Empty memory template. No evidence gathered, scores assigned, or independent approval claimed.",
+    "standard": "Proposal potential only; novelty is the lower of research novelty and idea novelty. Gates change only by explicit user decision. Best is display-only highest novelty + audience impact, not another gate; rounds under changed rubrics, audiences, or constraints are not directly comparable.",
+    "gate": { "novelty": 94, "audience_impact": 94 }
+  },
+  "areas": [],
+  "angles": [],
+  "rounds": [],
+  "frontier": [],
+  "blockers": [],
+  "risks": [],
+  "lessons": [],
+  "calibration": [],
+  "calibration_notes": [],
+  "audits": []
+}
