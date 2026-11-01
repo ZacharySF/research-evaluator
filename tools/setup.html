@@ -97,6 +97,7 @@ background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent2)
       <div id="s-gates"></div>
       <div class="rule" id="s-rule"></div>
       <div class="err" id="err"></div>
+      <p class="muted" id="storage"></p>
       <button class="go" id="save">Save setup</button>
       <button class="cancel" id="cancel">Cancel setup</button>
     </aside>
@@ -203,6 +204,7 @@ $("#cancel").onclick = async () => {
 (async () => {
   const init = await (await fetch("/api/init")).json();
   ZONES = init.zones; GATES = init.gates;
+  $("#storage").textContent = `Setup saves to ${init.dir}. Sessions launched without an explicit directory are temporary.`;
   const s = init.setup; const p = init.prefill || {};
   $("#goal").value = s?.goal ?? p.goal ?? "";
   $("#audience").value = s?.audience ?? p.audience ?? "";

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// Optional visual companion for the research-evaluator skill: a browser setup page for the review
-// thresholds and constraints, and a static report of saved reviews. Node.js 18+, no dependencies.
-//   node tools/ui.mjs setup  --dir <loop-dir> [--goal "..."] [--audience "..."] [--no-open]
+// UI-first setup for the research-evaluator skill and static reports of saved reviews.
+// Node.js 18+, no dependencies. Without --dir, setup uses an isolated temporary session.
+//   node tools/ui.mjs setup  [--dir <loop-dir>] [--goal "..."] [--audience "..."] [--no-open]
 //   node tools/ui.mjs wait   --dir <loop-dir> [--timeout <seconds>]
 //   node tools/ui.mjs report --dir <loop-dir> [--no-open]
 //   node tools/ui.mjs atlas  --dir <loop-dir> [--check] [--no-open]
@@ -9,8 +9,9 @@
 // user presses Save or Cancel (exit 0 saved, 2 cancelled/expired, 3 wait timeout).
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
-import { readFileSync, writeFileSync, existsSync, mkdirSync, openSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, mkdtempSync, openSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { normalizeSetup, renderReport, loadLoop, GATES, ZONES, BASE_CSS } from "./lib.mjs";
 import { validateAtlas, checkAngleMap, renderAtlas } from "./atlas.mjs";
@@ -132,9 +133,12 @@ const die = (msg, code = 1) => { process.stderr.write(msg + "\n"); process.exit(
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const cmd = args._[0];
-  if (!cmd || args.help) die("usage: node ui.mjs setup|wait|report|atlas --dir <loop-dir> [options]", cmd ? 0 : 1);
-  if (typeof args.dir !== "string") die("--dir <loop-dir> is required");
-  const dir = resolve(args.dir);
+  if (!cmd || args.help) die("usage: node ui.mjs setup [--dir <loop-dir>] | wait|report|atlas --dir <loop-dir> [options]", cmd ? 0 : 1);
+  if (args.dir !== undefined && typeof args.dir !== "string") die("--dir requires a directory path");
+  if (args.dir === undefined && cmd !== "setup") die("--dir <loop-dir> is required");
+  const dir = args.dir === undefined
+    ? mkdtempSync(join(tmpdir(), "research-evaluator-"))
+    : resolve(args.dir);
   const prefill = Object.fromEntries(["goal", "audience"].filter((k) => typeof args[k] === "string").map((k) => [k, args[k]]));
 
   if (cmd === "serve") {
