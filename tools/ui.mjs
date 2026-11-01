@@ -4,6 +4,7 @@
 //   node tools/ui.mjs setup  --dir <loop-dir> [--goal "..."] [--audience "..."] [--no-open]
 //   node tools/ui.mjs wait   --dir <loop-dir> [--timeout <seconds>]
 //   node tools/ui.mjs report --dir <loop-dir> [--no-open]
+//   node tools/ui.mjs atlas  --dir <loop-dir> [--check] [--no-open]
 // `setup` starts the page in the background and returns its URL at once; `wait` blocks until the
 // user presses Save or Cancel (exit 0 saved, 2 cancelled/expired, 3 wait timeout).
 import { createServer } from "node:http";
@@ -12,6 +13,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, openSync } from "no
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { normalizeSetup, renderReport, loadLoop, GATES, ZONES, BASE_CSS } from "./lib.mjs";
+import { validateAtlas, checkAngleMap, renderAtlas } from "./atlas.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const STATE_FILE = ".review-setup-state.json";
@@ -130,7 +132,7 @@ const die = (msg, code = 1) => { process.stderr.write(msg + "\n"); process.exit(
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const cmd = args._[0];
-  if (!cmd || args.help) die("usage: node ui.mjs setup|wait|report --dir <loop-dir> [options]", cmd ? 0 : 1);
+  if (!cmd || args.help) die("usage: node ui.mjs setup|wait|report|atlas --dir <loop-dir> [options]", cmd ? 0 : 1);
   if (typeof args.dir !== "string") die("--dir <loop-dir> is required");
   const dir = resolve(args.dir);
   const prefill = Object.fromEntries(["goal", "audience"].filter((k) => typeof args[k] === "string").map((k) => [k, args[k]]));
@@ -189,6 +191,29 @@ async function main() {
     writeFileSync(out, renderReport(loop.setup, loop.rounds));
     if (args.open !== false) openInBrowser(pathToFileURL(out).href);
     process.stdout.write(JSON.stringify({ report: out, rounds: loop.rounds.length }) + "\n");
+    return;
+  }
+
+  if (cmd === "atlas") {
+    const data = JSON.parse(readFileSync(join(dir, "atlas-data.json"), "utf8"));
+    validateAtlas(data);
+    let coverage;
+    if (args.check) {
+      coverage = checkAngleMap(data.angles, readFileSync(join(dir, "angle-map.md"), "utf8"));
+      if (coverage.missing.length || coverage.stale.length) {
+        die([
+          ...coverage.missing.map((row) => `MISSING in atlas-data.json: ${row}`),
+          ...coverage.stale.map((id) => `map_name not found in angle-map.md: ${id}`),
+        ].join("\n"));
+      }
+    }
+    const out = join(dir, "atlas.html");
+    writeFileSync(out, renderAtlas(data));
+    if (args.open !== false) openInBrowser(pathToFileURL(out).href);
+    process.stdout.write(JSON.stringify({
+      atlas: out, angles: data.angles.length, rounds: (data.rounds || []).length,
+      ...(coverage ? { matched_rows: coverage.rows.length } : {}),
+    }) + "\n");
     return;
   }
 

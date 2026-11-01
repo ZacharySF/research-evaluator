@@ -1,0 +1,48 @@
+{
+  "scope": "No-tools evaluate-once regression after feedback-role changes; not an independent literature review.",
+  "model_alias": "default; resolved version not exposed",
+  "input": "Evaluate once for database-systems engineers, gates 88/93, no external service; ordered replicated element list with stable IDs and tombstones, novelty claim, no prototype; no web/research or source tools.",
+  "output": {
+    "verdict": "BLOCKED",
+    "round": 1,
+    "audience": "Database-systems engineers",
+    "thresholds": {
+      "novelty": 88,
+      "audience_impact": 93
+    },
+    "scores": null,
+    "constraints": [
+      {
+        "constraint": "No external service.",
+        "status": "met",
+        "evidence": "The proposed mechanism is explicitly local and describes no external-service dependency. This finding concerns the stated proposal, not a verified implementation."
+      }
+    ],
+    "prior_art": [],
+    "evidence_checked": [
+      "Read the supplied proposal: a local replicated sequence represented as an ordered element list with stable IDs and tombstones, claimed to differ from prior CRDT work.",
+      "The proposal supplies no concurrent-insertion ordering rule, deletion semantics, merge procedure, convergence argument, resource bounds, or discriminating evaluation plan. These omissions limit identification of its exact technical contribution.",
+      "No web/research tools or primary-source access are available in this invocation. No independent searches or source reads were performed; the empty prior-art list does not establish novelty.",
+      "The absence of a prototype is not a blocker for evaluating proposal-stage novelty and conditional potential."
+    ],
+    "uncertainties": [
+      "The claimed distinction from existing replicated-sequence and CRDT mechanisms has not been independently checked.",
+      "Stable IDs and tombstones specify representation ingredients but do not establish how concurrent operations produce a deterministic sequence.",
+      "Replication assumptions, supported operations, delivery guarantees, tombstone retention or reclamation, and intended performance advantages are unspecified.",
+      "Recent literature, primary-source methods, and relevant implementations could not be examined."
+    ],
+    "critique": [
+      "Scoring is blocked because fresh independent research and necessary primary-source examination are unavailable. Assigning even conservative numeric scores would substitute unsupported judgment for the required evidence.",
+      "The claimed gap is that this sequence mechanism differs from prior CRDT work, but the proposal does not identify a particular unsolved problem or a mechanism-level distinction. An ordered list, stable IDs, and tombstones alone are insufficient to establish that distinction.",
+      "The strongest overlap hypothesis to investigate is that the representation reproduces established tombstone-based replicated-sequence designs. This is a research lead, not a verified prior-art finding in this review.",
+      "For database-systems engineers, potential impact would depend on a consequential technical advantage such as improved concurrency semantics, metadata growth, reclamation, or operational cost. The proposal states neither such a target nor a falsifiable comparison, so its conditional benefit remains underspecified.",
+      "The local-only constraint is consistent with the described mechanism. Missing implementation evidence is not grounds for rejection; unavailable independent evidence prevents a defensible assessment."
+    ],
+    "questions": [],
+    "next_action": {
+      "action": "Return control without revising or implementing the proposal. Enable a read-only research invocation with access to primary replicated-sequence literature and implementation documentation, then conduct a targeted comparison against stable-ID, tombstone-based designs.",
+      "acceptance_check": "The reviewer can independently discover and open the closest primary sources, document their operation and ordering rules, and determine whether the supplied mechanism has an identifiable residual contribution. Any remaining mechanism ambiguity must be reported rather than filled with invented design details."
+    },
+    "summary": "BLOCKED: the proposal was inspected, but no independent source discovery or examination was possible, so novelty and audience impact are unscored. The stated local mechanism is consistent with the no-external-service constraint, and lack of a prototype is not disqualifying. Distinctness from prior CRDT work, convergence under concurrent operations, and a consequential benefit for database-systems engineers remain unestablished hypotheses."
+  }
+}
