@@ -16,6 +16,7 @@ This is a Markdown prompt/Agent Skills repository, not a research service or a p
 
 ## What changed
 
+- **UI-first launch:** invoking the full skill opens setup immediately, before chat questions. No project folder is required: the launcher uses a temporary session unless you explicitly authorize a persistent directory.
 - **Research memory:** a playbook, explored/unexplored angle map, lessons, estimate calibration, and evaluator audit log survive between sessions. Closed ideas keep their sources, closure reason, leftovers, and condition for reopening.
 - **Two feedback paths:** the auditor improves evidence-backed evaluator instructions; the retrospective improves the research process and next batch. Neither can rewrite historical scores, lower gates, relax constraints, or guarantee success.
 - **A visual research atlas:** territory map, score history, next gaps, blockers, risks, lessons, calibration, and audit findings in one offline HTML page. A coverage check detects angles missing from either the notes or the atlas.
@@ -63,7 +64,7 @@ mkdir -p ~/.omp/agent/skills
 test ! -e ~/.omp/agent/skills/research-evaluator && test ! -L ~/.omp/agent/skills/research-evaluator && ln -s "$PWD" ~/.omp/agent/skills/research-evaluator
 ```
 
-Do not replace an existing destination. The skill loads `agents/research-evaluator.md` relative to `SKILL.md`, so copying only `SKILL.md` is insufficient. Automatic skill discovery/reload is host-dependent; explicit natural-language use works without a native skill command. No additional skills, package installs, runtime, or model-specific configuration are required.
+Do not replace an existing destination. The skill loads `agents/research-evaluator.md` relative to `SKILL.md`, so copying only `SKILL.md` is insufficient. Automatic skill discovery/reload is host-dependent; explicit natural-language use works without a native skill command. The full skill's setup UI requires Node.js 18+ and a browser; the standalone Markdown agents do not. No package installation or companion skill is required.
 
 ### Plain Markdown / existing instructions
 
@@ -85,15 +86,26 @@ Use the installed file’s actual path if you are outside the repository. With a
 
 The builder researches and revises; the evaluator independently challenges overlap, residual contribution, feasibility, audience value, and constraints without building the proposal. A stalled candidate can pivot rather than merely rewording its claims. Stop when the configured criteria are satisfied, when evidence access is blocked, when a user-supplied limit is reached, or as `STAGNATED` when no materially new evidence, mechanism, or viable pivot remains. Preserve the last review and research receipts; stagnation is never a pass. There is no invented default round limit or promise that retries increase scores.
 
-### Optional visual setup and report
+### UI-first setup and optional saved reports
 
-If you have Node.js 18+ and allow the assistant to save review files in a folder, the skill can set up a review on a browser page instead of in chat. The page has a pass-score slider for novelty and one for audience impact, plus fields for constraints and limits. After each round it can render a visual report with scores against thresholds, trends, critique, prior art, and the next action. Nothing to install: the tools are in [`tools/`](tools/), with plain Node and no dependencies.
+Invoking the full skill opens setup before asking for a topic, audience, mode, scoring thresholds, constraints, or save location in chat. The page collects the research goal, audience, pass-score sliders, constraints, and limits. A bare invocation selects the improvement loop after Save; an explicit one-review request still runs only one review.
+
+Node.js 18+ and a browser are required for setup, with no dependencies to install. Without `--dir`, the launcher creates an isolated operating-system temporary directory and returns its path alongside the URL. It does not write into your project. Save confirms the setup; Cancel or 30 minutes of inactivity stops setup without starting research. Temporary sessions are not durable storage and may be removed by the operating system.
 
 ```sh
-node tools/ui.mjs setup  --dir research/   # opens the setup page and prints its URL
-node tools/ui.mjs wait   --dir research/   # waits for Save; writes research/review-setup.json
-node tools/ui.mjs report --dir research/   # renders research/report.html from review-roundN.json files
+node tools/ui.mjs setup                       # opens the UI; prints {"url": "...", "dir": "..."}
+node tools/ui.mjs wait --dir <returned-dir>   # waits for Save or Cancel
 ```
+
+The UI displays where setup will be saved. Research records stay in conversation unless you separately authorize a persistent project-local folder. To use an already authorized folder, pass it explicitly; existing saved values load for editing:
+
+```sh
+node tools/ui.mjs setup  --dir research/
+node tools/ui.mjs wait   --dir research/
+node tools/ui.mjs report --dir research/   # renders saved review-roundN.json files
+```
+
+If the browser cannot open automatically, use the printed URL. If the runtime is unavailable, the assistant reports the failure rather than silently starting a chat interview. A conversational fallback is available on explicit request. Direct use of the standalone evaluator remains independent of the setup UI.
 
 ![Browser setup with goal, audience, pass-score sliders, constraints, and a round limit](docs/screenshots/setup.png)
 
@@ -163,7 +175,7 @@ npx --yes markdownlint-cli2@0.24.0 '**/*.md'
 node --test 'tools/test/*.test.mjs'
 ```
 
-Node.js is only needed for these development checks and the optional visual tools, not for using the prompts.
+Node.js is required for these development checks and the full skill's setup UI. Direct use of the standalone Markdown agents does not require it.
 
 ## License
 

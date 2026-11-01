@@ -5,14 +5,28 @@ description: Research proposals through fresh evaluation, evaluator audits, proc
 
 # Research proposal review and improvement
 
-Use this skill to evaluate a research proposal once or to research, propose, obtain independent critique, audit the evaluator, and revise toward user-configured novelty and audience-impact thresholds. Retrospectives carry evidence-backed process improvements and explored/unexplored memory into each next round. This is a proposal workflow, not an implementation or publication workflow. No runtime dependencies beyond the host assistant's research tools are required; no companion skill is mandatory. File persistence and the Node-based visual atlas are optional.
+Use this skill to evaluate a research proposal once or to research, propose, obtain independent critique, audit the evaluator, and revise toward user-configured novelty and audience-impact thresholds. Retrospectives carry evidence-backed process improvements and explored/unexplored memory into each next round. This is a proposal workflow, not an implementation or publication workflow.
+
+## Launch the setup UI first
+
+Every invocation to use this skill MUST open the setup UI before asking setup questions in chat. Do not ask for a topic, audience, scoring thresholds, mode, project folder, or save permission first. Resolve `$SKILL` to the directory containing this file and run:
+
+```sh
+node "$SKILL/tools/ui.mjs" setup
+```
+
+The command opens the browser and prints its URL and an isolated temporary session directory. Give the user the URL, then run `node "$SKILL/tools/ui.mjs" wait --dir <returned-dir>`. Read `review-setup.json` only after Save (exit 0). Cancel or expiry (exit 2) stops setup; do not start research. Never mistake the UI's idle expiry for a research time budget.
+
+Use `--dir <loop-dir>` instead only when the user has already authorized that specific project-local directory. Temporary setup requires no project writes and must not be blocked on a persistence question. Save authorizes the selected setup, not project writes, implementation, publication, or evaluator edits. Keep subsequent research records in conversation unless the user separately authorizes a named persistent directory. Temporary files can be removed by the operating system; do not promise durable recovery from them.
+
+Prefill `--goal` and `--audience` when supplied; never invent them. If Node.js 18+ or browser launch fails, report the actual failure and provide the printed URL when available. Do not silently replace the UI with a chat interview; offer a conversational fallback only after the failure or when the user explicitly requests it. Requests merely to explain or edit the skill do not launch research setup.
 
 ## Load the reviewer and choose the route
 
 Read [agents/research-evaluator.md](agents/research-evaluator.md), resolving that path **relative to this SKILL.md's own directory**, not the project's working directory. Load the complete file as the reviewer instructions, not merely its frontmatter or description. That file contains the standalone research method, score rubric, verdict rules, and JSON response contract. If the file is unavailable, report the missing evaluator instructions rather than improvising a weaker substitute.
 
 - **Evaluate once:** The user requests an assessment, critique, or score of an existing proposal. Run one review and return its JSON unchanged. Do not silently start revisions, implement the idea, or continue until it passes. If there is no inspectable proposal, report the missing input rather than inventing one.
-- **Improve/research loop:** The user requests proposal development, revision, a research search, or iteration toward a target. Act as the builder using the cycle below. A request to write or describe this workflow does not authorize running it.
+- **Improve/research loop:** The user requests proposal development, revision, a research search, or iteration toward a target. Act as the builder using the cycle below. A bare skill invocation defaults to this route after the user saves the UI; do not interpose a mode question before launching it. A request to write or describe this workflow does not authorize running it.
 
 For an executed improvement loop, also load [agents/validator-auditor.md](agents/validator-auditor.md) and [agents/research-retro.md](agents/research-retro.md) relative to this SKILL.md. Their complete, portable instructions define separate audit and retrospective JSON receipts. The auditor checks evaluator accuracy; the retrospective improves process and memory. Neither scores proposals or replaces the evaluator's two-gate JSON contract. See [standalone role installation](README.md#standalone-agents) to use any role without the loop skill. If a required role definition is unavailable, disclose that missing prerequisite instead of claiming that phase ran.
 
@@ -46,13 +60,13 @@ Evaluator-edit permission is **separate**: the auditor may modify only an explic
 
 If persistence is not authorized, keep this same packet, memory, role outputs, and recovery links in conversation. Lack of a saved atlas never excuses missing memory; lack of permission to edit the evaluator never excuses hiding an audit finding.
 
-### Optional visual setup and report
+### UI setup and optional saved reports
 
-When Node.js 18+ is available and the user has authorized a folder for saved review files (the loop directory), you may offer a browser setup page and a visual report instead of collecting the packet in chat. They are optional. Without permission to save files, or without Node, keep the packet in the conversation as above. `tools/` is resolved relative to this SKILL.md.
+The setup UI is the entry point, not an optional offer. `tools/` is resolved relative to this SKILL.md. Its temporary session is only for setup; a named project-local loop directory for review records remains optional and requires separate permission.
 
-1. Run `node tools/ui.mjs setup --dir <loop-dir> [--goal "<goal>"] [--audience "<audience>"]`. It opens a page and prints `{"url": ...}`; give the user that URL. The page collects the goal, the audience, a pass-score slider for novelty and one for audience impact (default 94 each), constraints, and limits.
-2. Run `node tools/ui.mjs wait --dir <loop-dir>`. It blocks until the user saves (exit 0, writes `review-setup.json`), cancels, or leaves the page idle for 30 minutes (exit 2). Load the saved goal, audience, thresholds, constraints, and limits into the packet. The page does not change any of the rules in this skill.
-3. After each review, save the evaluator's JSON verbatim as `<loop-dir>/review-roundN.json`, then run `node tools/ui.mjs report --dir <loop-dir>`. It writes and opens `report.html`, which shows the scores against their thresholds, the change between rounds, critique, constraints, prior art, questions, uncertainties, the next action, and a round history. Blocked rounds show no scores. Add `--no-open` to refresh a report the user already has open.
+1. Launch and wait as described above. The page collects the goal, audience, pass-score sliders for novelty and audience impact (default 94 each), constraints, and limits. Use existing authorized setup files when supplied rather than replacing their values with defaults.
+2. After Save, load the saved goal, audience, thresholds, constraints, and limits into the packet. The page does not change any of the rules in this skill. A cancelled setup is not permission to research.
+3. When a persistent loop directory is authorized, save each evaluator JSON verbatim as `<loop-dir>/review-roundN.json`, then run `node tools/ui.mjs report --dir <loop-dir>`. It writes and opens `report.html`, which shows the scores against their thresholds, the change between rounds, critique, constraints, prior art, questions, uncertainties, the next action, and a round history. Blocked rounds show no scores. Add `--no-open` to refresh a report the user already has open. Otherwise preserve the JSON in conversation.
 4. When memory persistence is authorized, maintain `atlas-data.json` in step with `angle-map.md` using the [retrospective's data contract](agents/research-retro.md#atlas-data-contract), then run `node tools/ui.mjs atlas --dir <loop-dir> --check [--no-open]`. It generates `atlas.html` and checks every angle-map row is represented, including unexplored and unscored directions. Record the actual result; do not claim a checked atlas if generation/checks failed or were not run. The atlas complements the unchanged per-review report; it never supersedes original receipts, constraints, or audit reliance warnings. If Node is unavailable, keep memory/data in conversation or authorized files and disclose that rendering is pending.
 
 Score bands on the page: 94–100 Elite, 85–93 Strict, 70–84 Solid, 1–69 Lenient. Changing a threshold later still requires the user's explicit decision, for example by rerunning the setup page.
