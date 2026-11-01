@@ -213,7 +213,7 @@ function loopFlow() {
   return p.join("");
 }
 
-const CSS = `
+export const CSS = `
 :root{--bg:#f7f8fa;--card:#fff;--fg:#1d2330;--muted:#5b6475;--line:#d9dee7;--accent:#2457c5;
 --closed-bg:#e4e7ee;--closed-st:#7d879a;--partial-bg:#fdecc4;--partial-st:#b7791f;--active-bg:#d3e4ff;--active-st:#2b6cb0;
 --open-bg:#e5f6ec;--open-st:#2f855a;--open-line:#a7dcbb;--region:#eef1f6;--gate:#c53030;--nov:#2457c5;--imp:#b7791f}
