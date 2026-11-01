@@ -5,6 +5,7 @@
 //   node tools/ui.mjs wait   --dir <loop-dir> [--timeout <seconds>]
 //   node tools/ui.mjs report --dir <loop-dir> [--no-open]
 //   node tools/ui.mjs atlas  --dir <loop-dir> [--check] [--no-open]
+//   node tools/ui.mjs atlas  --dir <loop-dir> --live [--no-open] (runs until stopped)
 // `setup` starts the page in the background and returns its URL at once; `wait` blocks until the
 // user presses Save or Cancel (exit 0 saved, 2 cancelled/expired, 3 wait timeout).
 import { createServer } from "node:http";
@@ -15,6 +16,7 @@ import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { normalizeSetup, renderReport, loadLoop, GATES, ZONES, BASE_CSS } from "./lib.mjs";
 import { validateAtlas, checkAngleMap, renderAtlas } from "./atlas.mjs";
+import { startAtlasServer } from "./live-atlas.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const STATE_FILE = ".review-setup-state.json";
@@ -199,6 +201,12 @@ async function main() {
   }
 
   if (cmd === "atlas") {
+    if (args.live) {
+      const { url } = await startAtlasServer({ dir, port: Number(args.port ?? 0) });
+      if (args.open !== false) openInBrowser(url);
+      process.stdout.write(JSON.stringify({ url, dir, live: true }) + "\n");
+      return;
+    }
     const data = JSON.parse(readFileSync(join(dir, "atlas-data.json"), "utf8"));
     validateAtlas(data);
     let coverage;

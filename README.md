@@ -22,7 +22,7 @@ This is a Markdown prompt/Agent Skills repository, not a research service or a p
 - **A visual research atlas:** territory map, score history, next gaps, blockers, risks, lessons, calibration, and audit findings in one offline HTML page. A coverage check detects angles missing from either the notes or the atlas.
 - **Sharper evaluation:** creativity beyond merely being unpublished; a named hard technical contribution; fresh searches in neighbouring fields and recent work; source limitations kept within scope; score changes justified by changed criteria.
 
-The atlas is a view of saved research notes, not an automatic research service. Agents maintain its JSON and Markdown; rendering it does not launch agents, watch files, browse sources, or rescore proposals.
+The atlas is a view of saved research notes, not an automatic research service. Agents maintain its JSON and Markdown; rendering it does not launch agents, browse sources, or rescore proposals. The optional live viewer only rereads those saved notes.
 
 ## Install: choose one route
 
@@ -147,6 +147,18 @@ node tools/ui.mjs atlas --dir examples/research-memory --check --no-open
 ```
 
 The [example guide](examples/research-memory/README.md) documents the JSON contract and maintenance workflow. For repeated updates, use `--no-open` and reload the page. Without file-write permission, keep the same memory and feedback receipts in the conversation instead; no files or atlas are silently created.
+
+#### Live map
+
+To follow the research as it happens, run the read-only live viewer against the authorized research folder:
+
+```sh
+node tools/ui.mjs atlas --dir /path/to/project/research --live   # prints {"url": ...}; runs until stopped
+```
+
+The page opens paused. Turn on **Live map updates** to refresh the map every two seconds from each research checkpoint: angles being searched now are marked active, and new directions and outcomes appear as the loop records them. Turn it off to freeze the current view while you reference it. Scroll position and open sections are kept between refreshes.
+
+The viewer listens on 127.0.0.1 only and serves only the rendered map. It shows a checkpoint only when `atlas-data.json` is valid and matches `angle-map.md`; during a partial or mismatched write it keeps the last valid map and says it is waiting. It can start before the first checkpoint exists. Live updates show what the research has written down, not every search in progress.
 
 ![Next research gaps, blockers, and risks from the fictional example](docs/screenshots/atlas-gaps.png)
 
