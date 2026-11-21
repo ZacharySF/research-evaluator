@@ -8,7 +8,7 @@ import { spawnSync } from "node:child_process";
 
 const cli = fileURLToPath(new URL("../ui.mjs", import.meta.url));
 const fixture = {
-  meta: { title: "CLI fixture", gate: { novelty: 94, audience_impact: 88 } },
+  meta: { title: "CLI fixture", sections: [{ name: "Rigor", threshold: 88 }], judge_mode: "potential" },
   areas: [{ id: "storage", name: "Storage" }],
   angles: [{ id: "logs", name: "Logs", map_name: "Logs", area: "storage", status: "open" }],
   rounds: [], frontier: [],

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Set up the research review</title>
+<title>Set up the research judge</title>
 <style>
 /*BASE_CSS*/
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start;margin-top:28px}
@@ -19,9 +19,24 @@ input[type=text],textarea{width:100%;background:var(--panel2);color:var(--fg);bo
 padding:11px 13px;font:inherit;outline:none;transition:border-color .15s,box-shadow .15s}
 textarea{resize:vertical;min-height:64px}
 input[type=text]:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
-.goal{font-size:18px;min-height:76px}
-.gate{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;background:var(--panel2)}
-.gate b{font-size:16px}.gate small{display:block;color:var(--muted)}
+.topic{font-size:18px;min-height:76px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:640px){.row2{grid-template-columns:1fr}}
+
+.sec{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;background:var(--panel2);transition:opacity .2s,border-color .2s}
+.sec.off{opacity:.55}.sec.off .body{display:none}
+.sec-top{display:flex;align-items:center;gap:12px}
+.sec-top .name{flex:1;min-width:0}
+.sec-top .name b{font-size:16px}.sec-top .name small{display:block;color:var(--muted)}
+.sec-top input.nm{font-weight:650;font-size:15px;padding:7px 10px}
+.x{background:none;border:0;color:var(--muted);cursor:pointer;font-size:18px;padding:4px 8px;border-radius:8px}.x:hover{color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,transparent)}
+.switch{position:relative;width:42px;height:24px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.switch i{position:absolute;inset:0;border-radius:99px;background:var(--line);cursor:pointer;transition:background .2s}
+.switch i::after{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px #0006}
+.switch input:checked+i{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.switch input:checked+i::after{transform:translateX(18px)}
+.switch input:focus-visible+i{outline:2px solid var(--accent);outline-offset:2px}
+
 .dial{display:flex;align-items:center;gap:16px;margin:16px 0 4px}
 .big{font-size:40px;font-weight:780;letter-spacing:-.03em;min-width:72px;text-align:center;color:var(--z);font-variant-numeric:tabular-nums;line-height:1}
 .dial-mid{flex:1}
@@ -37,14 +52,23 @@ input[type=range]:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--acc
 .ticks{position:relative;height:18px;font-size:11px;color:var(--muted);margin-top:6px}
 .ticks span{position:absolute;transform:translateX(-50%);cursor:pointer}.ticks span:hover{color:var(--fg)}
 input.exact{width:64px;text-align:center;padding:6px;font-weight:650;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:10px;font:inherit}
+details.adv summary{cursor:pointer;color:var(--muted);font-size:13px;margin-top:10px}
+.add{width:100%;padding:13px;border:1.5px dashed var(--line);background:none;color:var(--muted);border-radius:14px;font:inherit;font-weight:600;cursor:pointer}
+.add:hover{color:var(--fg);border-color:var(--accent)}
+
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg button{text-align:left;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--panel2);color:var(--fg);font:inherit;cursor:pointer}
+.seg button b{display:block;margin-bottom:2px}.seg button small{color:var(--muted)}
+.seg button.on{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent);background:color-mix(in srgb,var(--accent) 10%,var(--panel2))}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 8px 6px 12px;border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,var(--panel2));border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));font-size:13.5px}
 .chip button{background:none;border:0;color:var(--muted);cursor:pointer;font-size:15px;line-height:1}
 .sugg{background:none;border:1px dashed var(--line);color:var(--muted);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}.sugg:hover{color:var(--fg);border-color:var(--accent)}
+
 .aside{position:sticky;top:20px}
 .aside h3{font-size:15px;margin-bottom:12px}
-.sum-goal{font-weight:650;margin-bottom:14px;word-break:break-word}
-.sum-goal.empty{color:var(--muted);font-weight:400;font-style:italic}
+.sum-topic{font-weight:650;margin-bottom:14px;word-break:break-word}
+.sum-topic.empty{color:var(--muted);font-weight:400;font-style:italic}
 .sum-row{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;margin:9px 0 4px}
 .sum-row b{color:var(--z);font-variant-numeric:tabular-nums}
 .mini{height:6px;border-radius:99px;background:var(--panel2);overflow:hidden}.mini i{display:block;height:100%;border-radius:99px;background:var(--z)}
@@ -62,119 +86,153 @@ background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent2)
 <body>
 <main class="wrap">
   <div class="eyebrow">Research evaluator</div>
-  <h1 class="title">Set up your research review</h1>
-  <p class="lede">Say what the research should achieve and how strict the independent reviewer is. The builder keeps researching and revising until both scores clear their bar, the evidence runs out, or your limits are reached.</p>
+  <h1 class="title">Set up your research judge</h1>
+  <p class="lede">Choose what gets scored and how strict the judge is. A researcher keeps revising until an independent evaluator scores every section above its bar.</p>
 
   <div class="layout">
     <div>
       <section class="card step">
-        <div class="step-head"><div class="num">1</div><div><h2>What should the research achieve?</h2><p>The goal and who the result has to matter to.</p></div></div>
-        <label class="f" for="goal">Goal</label>
-        <textarea id="goal" class="goal" placeholder="e.g. A new way to track eye gaze on glasses that needs no new hardware"></textarea>
-        <label class="f" for="audience">Audience <span>(optional; the reviewer picks a domain audience and says so if empty)</span></label>
-        <input type="text" id="audience" placeholder="e.g. Wearables researchers at a major lab">
+        <div class="step-head"><div class="num">1</div><div><h2>What are we researching?</h2><p>The topic and who the result has to convince.</p></div></div>
+        <label class="f" for="topic">Topic</label>
+        <textarea id="topic" class="topic" placeholder="e.g. A new way to track eye gaze on glasses that need no new hardware"></textarea>
+        <div class="row2">
+          <div><label class="f" for="goal">Goal <span>(optional)</span></label><input type="text" id="goal" placeholder="e.g. A proposal worth a research grant"></div>
+          <div><label class="f" for="audience">Audience <span>(optional)</span></label><input type="text" id="audience" placeholder="e.g. Meta Reality Labs engineers"></div>
+        </div>
       </section>
 
       <section class="card step">
-        <div class="step-head"><div class="num">2</div><div><h2>How strict is the reviewer?</h2><p>Drag each slider to the score a proposal needs to pass. The default is 94.</p></div></div>
-        <div id="gates"></div>
+        <div class="step-head"><div class="num">2</div><div><h2>What gets scored?</h2><p>Turn sections on or off, and drag each slider to set the score it needs to pass.</p></div></div>
+        <div id="sections"></div>
+        <button class="add" id="add">+ Add your own section</button>
       </section>
 
       <section class="card step">
-        <div class="step-head"><div class="num">3</div><div><h2>Ground rules</h2><p>Constraints that can't be broken, and when to stop.</p></div></div>
-        <label class="f" for="cin">Constraints <span>(a proposal that breaks one can never pass)</span></label>
+        <div class="step-head"><div class="num">3</div><div><h2>Ground rules</h2><p>How the judge treats unproven ideas, and anything that can't be broken.</p></div></div>
+        <div class="seg" id="mode">
+          <button data-mode="potential"><b>Judge the idea's potential</b><small>Planned results count as hypotheses. Best for proposals.</small></button>
+          <button data-mode="measured"><b>Require measured results</b><small>Claims need real data or experiments behind them.</small></button>
+        </div>
+        <label class="f" for="cin">Hard constraints <span>(a proposal that breaks one can never pass)</span></label>
         <input type="text" id="cin" placeholder="Type one and press Enter">
         <div class="chips" id="chips"></div>
         <div class="chips" id="sugg"></div>
-        <label class="f" for="limits">Limits <span>(optional; no limit is invented if empty)</span></label>
-        <input type="text" id="limits" placeholder="e.g. At most 5 rounds, or stop after 2 hours">
       </section>
     </div>
 
     <aside class="aside card">
       <h3>At a glance</h3>
-      <div class="sum-goal" id="s-goal"></div>
-      <div id="s-gates"></div>
+      <div class="sum-topic" id="s-topic"></div>
+      <div id="s-secs"></div>
       <div class="rule" id="s-rule"></div>
       <div class="err" id="err"></div>
       <p class="muted" id="storage"></p>
-      <button class="go" id="save">Save setup</button>
+      <button class="go" id="save">Save rubric &amp; start</button>
       <button class="cancel" id="cancel">Cancel setup</button>
     </aside>
   </div>
 </main>
 
-<div class="done" id="done"><div class="card"><div class="tick" id="d-icon">✓</div><h2 id="d-title">Setup saved</h2><p class="muted" id="d-text">You can close this tab. Your assistant takes it from here.</p></div></div>
+<div class="done" id="done"><div class="card"><div class="tick" id="d-icon">✓</div><h2 id="d-title">Rubric saved</h2><p class="muted" id="d-text">You can close this tab. The first research round starts in your terminal.</p></div></div>
 
 <script>
 const $ = (s) => document.querySelector(s);
 const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-const SUGGESTIONS = ["No new hardware", "Open-source licenses only", "Public datasets only", "Must run on a phone"];
-let ZONES = [], GATES = [];
-const S = { thresholds: {}, constraints: [] };
+const SUGGESTIONS = ["No new hardware", "Open-source licenses only", "Public datasets only", "Must run on a phone", "Budget under $1,000"];
+let ZONES = [];
+const S = { sections: [], mode: "potential", constraints: [] };
 const zoneOf = (t) => ZONES.find((z) => t >= z.min) || ZONES[ZONES.length - 1];
 
-function renderGates() {
-  $("#gates").innerHTML = GATES.map((g) => {
-    const t = S.thresholds[g.key]; const z = zoneOf(t);
-    return `<div class="gate" style="--z:${z.color}" data-key="${g.key}">
-  <b>${esc(g.name)}</b><small>${esc(g.hint)}</small>
-  <div class="dial">
-    <div class="big" data-big>${t}</div>
-    <div class="dial-mid">
-      <div class="zone"><span class="pill" data-zl>${z.label}</span><small data-zm>${esc(z.means)}</small></div>
-      <input type="range" min="1" max="100" step="1" value="${t}" aria-label="${esc(g.name)} pass score">
-      <div class="ticks">${[50, 70, 85, 94].map((v) => `<span style="left:${v - 0.5}%" data-tick="${v}">${v}</span>`).join("")}</div>
+function renderSections() {
+  $("#sections").innerHTML = S.sections.map((s, i) => {
+    const z = zoneOf(s.threshold);
+    return `<div class="sec ${s.on ? "" : "off"}" style="--z:${z.color}" data-i="${i}">
+  <div class="sec-top">
+    <label class="switch" title="Score this section"><input type="checkbox" data-k="on" ${s.on ? "checked" : ""}><i></i></label>
+    <div class="name">${s.custom
+      ? `<input type="text" class="nm" data-k="name" value="${esc(s.name)}" placeholder="Section name">`
+      : `<b>${esc(s.name)}</b><small>${esc(s.hint || "")}</small>`}</div>
+    ${s.custom ? `<button class="x" data-del title="Remove section">✕</button>` : ""}
+  </div>
+  <div class="body">
+    <div class="dial">
+      <div class="big" data-big>${s.threshold}</div>
+      <div class="dial-mid">
+        <div class="zone"><span class="pill" data-zl>${z.label}</span><small data-zm>${esc(z.means)}</small></div>
+        <input type="range" min="1" max="100" step="1" value="${s.threshold}" data-k="threshold" aria-label="${esc(s.name)} pass score">
+        <div class="ticks">${[50, 70, 85, 94].map((t) => `<span style="left:${t - 0.5}%" data-tick="${t}">${t}</span>`).join("")}</div>
+      </div>
+      <input class="exact" type="number" min="1" max="100" value="${s.threshold}" data-k="threshold" aria-label="exact score">
     </div>
-    <input class="exact" type="number" min="1" max="100" value="${t}" aria-label="exact ${esc(g.name)} score">
+    <label class="f">To pass, it must…</label>
+    <textarea data-k="requirements" placeholder="What does a passing proposal do?">${esc(s.requirements)}</textarea>
+    <details class="adv"${s.scoring_guide ? " open" : ""}><summary>Scoring guide (optional)</summary>
+      <textarea data-k="scoring_guide" placeholder="e.g. 90+ = no prior work does this; 70 = a known idea in a new setting">${esc(s.scoring_guide || "")}</textarea></details>
   </div>
 </div>`;
   }).join("");
 }
 
-// Repaint one card in place while sliding, so the slider keeps focus.
-function paint(card) {
-  const t = S.thresholds[card.dataset.key]; const z = zoneOf(t);
+// Update one section card in place while sliding, so the slider never loses focus.
+function paintThreshold(card, s) {
+  const z = zoneOf(s.threshold);
   card.style.setProperty("--z", z.color);
-  card.querySelector("[data-big]").textContent = t;
+  card.querySelector("[data-big]").textContent = s.threshold;
   card.querySelector("[data-zl]").textContent = z.label;
   card.querySelector("[data-zm]").textContent = z.means;
-  card.querySelectorAll("input").forEach((el) => { if (document.activeElement !== el) el.value = t; });
+  card.querySelectorAll('[data-k="threshold"]').forEach((el) => { if (document.activeElement !== el) el.value = s.threshold; });
 }
 
 function renderRules() {
+  document.querySelectorAll("#mode button").forEach((b) => b.classList.toggle("on", b.dataset.mode === S.mode));
   $("#chips").innerHTML = S.constraints.map((c, i) => `<span class="chip">${esc(c)}<button data-rm="${i}" title="Remove">×</button></span>`).join("");
   $("#sugg").innerHTML = SUGGESTIONS.filter((x) => !S.constraints.includes(x)).map((x) => `<button class="sugg" data-add="${esc(x)}">+ ${esc(x)}</button>`).join("");
 }
 
 function renderSummary() {
-  const goal = $("#goal").value.trim();
-  $("#s-goal").textContent = goal || "No goal yet";
-  $("#s-goal").classList.toggle("empty", !goal);
-  $("#s-gates").innerHTML = GATES.map((g) => {
-    const t = S.thresholds[g.key]; const z = zoneOf(t);
-    return `<div style="--z:${z.color}"><div class="sum-row"><span>${esc(g.name)}</span><b>${t}</b></div><div class="mini"><i style="width:${t}%"></i></div></div>`;
-  }).join("");
-  const n = S.constraints.length; const limits = $("#limits").value.trim();
-  $("#s-rule").innerHTML = `Passes when <b>both scores</b> clear their bar${n ? ` and all <b>${n} constraint${n === 1 ? "" : "s"}</b> are met` : ""}, backed by fresh evidence. ${limits ? `Stops at: ${esc(limits)}.` : "No round limit; it stops when progress stalls."}`;
+  const topic = $("#topic").value.trim();
+  $("#s-topic").textContent = topic || "No topic yet";
+  $("#s-topic").classList.toggle("empty", !topic);
+  const on = S.sections.filter((s) => s.on);
+  $("#s-secs").innerHTML = on.length ? on.map((s) => {
+    const z = zoneOf(s.threshold);
+    return `<div style="--z:${z.color}"><div class="sum-row"><span>${esc(s.name || "Untitled")}</span><b>${s.threshold}</b></div><div class="mini"><i style="width:${s.threshold}%"></i></div></div>`;
+  }).join("") : `<p class="muted">No sections switched on.</p>`;
+  const n = S.constraints.length;
+  $("#s-rule").innerHTML = `Passes when <b>all ${on.length || ""} section${on.length === 1 ? "" : "s"}</b> clear their bar${n ? ` and none of the <b>${n} hard constraint${n === 1 ? "" : "s"}</b> is broken` : ""}. ${S.mode === "measured" ? "Measured results required." : "Judging the idea's potential."}`;
 }
 
-$("#gates").addEventListener("input", (ev) => {
-  const card = ev.target.closest(".gate"); if (!card) return;
-  const v = Math.round(Number(ev.target.value)); if (!Number.isFinite(v)) return;
-  S.thresholds[card.dataset.key] = Math.min(100, Math.max(1, v));
-  paint(card); renderSummary();
+$("#sections").addEventListener("input", (ev) => {
+  const card = ev.target.closest(".sec"); const k = ev.target.dataset.k;
+  if (!card || !k) return;
+  const s = S.sections[+card.dataset.i];
+  if (k === "threshold") {
+    const v = Math.round(Number(ev.target.value));
+    if (!Number.isFinite(v)) return;
+    s.threshold = Math.min(100, Math.max(1, v));
+    paintThreshold(card, s);
+  } else if (k === "on") {
+    s.on = ev.target.checked; card.classList.toggle("off", !s.on);
+  } else s[k] = ev.target.value;
+  renderSummary();
 });
-$("#gates").addEventListener("click", (ev) => {
-  const card = ev.target.closest(".gate");
-  if (card && ev.target.dataset.tick) { S.thresholds[card.dataset.key] = +ev.target.dataset.tick; paint(card); renderSummary(); }
+$("#sections").addEventListener("click", (ev) => {
+  const card = ev.target.closest(".sec"); if (!card) return;
+  const i = +card.dataset.i;
+  if (ev.target.matches("[data-del]")) { S.sections.splice(i, 1); renderSections(); renderSummary(); }
+  if (ev.target.dataset.tick) { S.sections[i].threshold = +ev.target.dataset.tick; paintThreshold(card, S.sections[i]); renderSummary(); }
 });
+$("#add").onclick = () => {
+  S.sections.push({ name: "", threshold: 80, requirements: "", scoring_guide: "", on: true, custom: true });
+  renderSections(); renderSummary();
+  document.querySelector(".sec:last-child input.nm")?.focus();
+};
+$("#mode").onclick = (ev) => { const b = ev.target.closest("button"); if (b) { S.mode = b.dataset.mode; renderRules(); renderSummary(); } };
 const addConstraint = (c) => { c = c.trim(); if (c && !S.constraints.includes(c)) S.constraints.push(c); renderRules(); renderSummary(); };
 $("#cin").addEventListener("keydown", (ev) => { if (ev.key === "Enter") { ev.preventDefault(); addConstraint(ev.target.value); ev.target.value = ""; } });
 $("#chips").onclick = (ev) => { if (ev.target.dataset.rm) { S.constraints.splice(+ev.target.dataset.rm, 1); renderRules(); renderSummary(); } };
 $("#sugg").onclick = (ev) => { if (ev.target.dataset.add) addConstraint(ev.target.dataset.add); };
-$("#goal").addEventListener("input", renderSummary);
-$("#limits").addEventListener("input", renderSummary);
+$("#topic").addEventListener("input", renderSummary);
 
 function showError(msg) { const e = $("#err"); e.textContent = msg; e.style.display = msg ? "block" : "none"; }
 async function post(path, body) {
@@ -189,10 +247,15 @@ function finish(title, text, icon) {
 }
 $("#save").onclick = async () => {
   const pending = $("#cin").value.trim(); if (pending) { addConstraint(pending); $("#cin").value = ""; }
-  showError(""); $("#save").disabled = true;
+  showError("");
+  $("#save").disabled = true;
   try {
-    await post("/api/save", { goal: $("#goal").value, audience: $("#audience").value, thresholds: S.thresholds, constraints: S.constraints, limits: $("#limits").value });
-    finish("Setup saved", "You can close this tab. Your assistant takes it from here.", "✓");
+    await post("/api/save", {
+      topic: $("#topic").value, goal: $("#goal").value, audience: $("#audience").value, judge_mode: S.mode,
+      sections: S.sections.filter((s) => s.on).map(({ name, threshold, requirements, scoring_guide }) => ({ name, threshold, requirements, scoring_guide })),
+      hard_constraints: S.constraints,
+    });
+    finish("Rubric saved", "You can close this tab. The first research round starts in your terminal.", "✓");
   } catch (err) { showError(err.message); } finally { $("#save").disabled = false; }
 };
 $("#cancel").onclick = async () => {
@@ -203,16 +266,25 @@ $("#cancel").onclick = async () => {
 
 (async () => {
   const init = await (await fetch("/api/init")).json();
-  ZONES = init.zones; GATES = init.gates;
+  ZONES = init.zones;
   $("#storage").textContent = `Setup saves to ${init.dir}. Sessions launched without an explicit directory are temporary.`;
-  const s = init.setup; const p = init.prefill || {};
-  $("#goal").value = s?.goal ?? p.goal ?? "";
-  $("#audience").value = s?.audience ?? p.audience ?? "";
-  $("#limits").value = s?.limits ?? "";
-  S.constraints = s?.constraints ? [...s.constraints] : [];
-  for (const g of GATES) S.thresholds[g.key] = s?.thresholds?.[g.key] ?? 94;
-  renderGates(); renderRules(); renderSummary();
-  if (!$("#goal").value) $("#goal").focus();
+  const r = init.rubric; const p = init.prefill || {};
+  $("#topic").value = r?.topic ?? p.topic ?? "";
+  $("#goal").value = r?.goal ?? p.goal ?? "";
+  $("#audience").value = r?.audience ?? p.audience ?? "";
+  S.mode = r?.judge_mode ?? "potential";
+  S.constraints = r?.hard_constraints ? [...r.hard_constraints] : [];
+  const defaults = init.defaults.map((d) => ({ ...d, scoring_guide: "", on: !r, custom: false }));
+  if (r) {
+    for (const sec of r.sections) {
+      const d = defaults.find((x) => x.name.toLowerCase() === sec.name.toLowerCase());
+      if (d) Object.assign(d, sec, { on: true });
+      else defaults.push({ ...sec, on: true, custom: true });
+    }
+  }
+  S.sections = defaults;
+  renderSections(); renderRules(); renderSummary();
+  if (!$("#topic").value) $("#topic").focus();
 })();
 </script>
 </body>

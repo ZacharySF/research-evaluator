@@ -6,14 +6,14 @@ Invented scenario only. No research ran, sources were read, independent reviewer
 
 - Fictional goal: investigate offline-first collaborative editing mechanisms for shared-workspace software maintainers.
 - Fictional scope: proposal-level reasoning and source comparison. No implementation, deployment, external communication, or publication is authorized by this example. No resource inventory or round budget is assumed.
-- Illustrative gates: novelty 94 and audience impact 94. Novelty is `min(research_novelty, idea_novelty)`; no gate change is modeled.
-- Nine simulated v1 candidates: six scored REVISE, two builder discards, one BLOCKED with null scores. Best is R7 Repair-cost contracts, 92/93; neither gate passes. Four closed / three partial / two active / three open angles.
+- Illustrative saved-rubric sections: Novelty 94, Impressiveness 94, Feasibility 80, Evidence quality 80; potential mode. Actual projects use every section/threshold and all hard constraints from their own `rubric.json`, including arbitrary additional sections. No criteria change is modeled.
+- Nine simulated v1 candidates: six scored REVISE, two builder discards, one BLOCKED with every section score null. Display-only best is R7 Repair-cost contracts, 96/95/62/85; Feasibility 62 fails 80 despite the first two passing. Four closed / three partial / two active / three open angles. No pass is claimed.
 - Reviewer mode: separate builder/reviewer roles are fictional, not actual independent agents. In real sequential mode, explicitly disclose the absence of independence and never claim independent approval.
 - Authority: this fixture is not a request to run a loop. Evaluate-once still stops after one evaluator JSON response.
 
 ## What changed in the simulated rounds
 
-R1/R5 repackaged existing mechanisms; keep them closed rather than rewrite their titles. R3's instant-knowledge premise failed; weaker expiry semantics must not silently replace the original guarantee. R2/R4/R6 retain precise but insufficient leftovers. R7 is promising only conditionally on an information-to-repair bound. R8 is paused because a decisive fictional annex is inaccessible, not because a prototype is absent. R9 repeats a priority rule and is discarded without an evaluator score.
+R1/R5 repackaged existing mechanisms; keep them closed rather than rewrite their titles. R3's instant-knowledge premise failed; weaker expiry semantics must not silently replace the original guarantee. R2/R4/R6 retain precise but insufficient leftovers. R7 is promising only conditionally on an information-to-repair bound: high Novelty and Impressiveness cannot override failed Feasibility. R8 is paused because a decisive fictional annex is inaccessible, not because a prototype is absent. R9 repeats a priority rule and is discarded without an evaluator score.
 
 ## Deliberately diverse next batch
 
@@ -25,4 +25,4 @@ These routes differ in bottleneck, mechanism, and evidence needed. Do not fill a
 
 ## Receipt discipline
 
-Real work would save verbatim reports separately, timestamp predictions before review, record primary sections/versions and actual access limits, and update [map](angle-map.md), [lessons](lessons.md), [calibration](calibration.md), and [atlas data](atlas-data.json) together. Recheck inherited evidence independently where possible. Never overwrite past scores after an audit; recommendations require permission before changing any local evaluator definition. No installed global prompt edits are implied.
+Real work preserves existing project research and `rubric.json`, saves verbatim `evaluation-roundN.json` reports, timestamps predictions before review, records primary sections/versions and actual access limits, and updates [map](angle-map.md), [lessons](lessons.md), [calibration](calibration.md), and [atlas data](atlas-data.json) together. Use full packaged role instructions in fresh contexts, not similarly named global Determine-specific agents. Recheck inherited evidence independently where possible. Never overwrite past scores after an audit; a local evaluator edit requires explicit path/permission. Potential judgments are not measured results; measured mode requires its configured evidence. No installed global prompt edits are implied.

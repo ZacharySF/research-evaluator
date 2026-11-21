@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-// UI-first setup for the research-evaluator skill and static reports of saved reviews.
-// Node.js 18+, no dependencies. Without --dir, setup uses an isolated temporary session.
-//   node tools/ui.mjs setup  [--dir <loop-dir>] [--goal "..."] [--audience "..."] [--no-open]
-//   node tools/ui.mjs wait   --dir <loop-dir> [--timeout <seconds>]
-//   node tools/ui.mjs report --dir <loop-dir> [--no-open]
-//   node tools/ui.mjs atlas  --dir <loop-dir> [--check] [--no-open]
-//   node tools/ui.mjs atlas  --dir <loop-dir> --live [--no-open] (runs until stopped)
+// Research evaluator UI: a browser setup page for the rubric, a static loop report, and the atlas.
+// Without --dir, setup uses an isolated temporary session and writes nothing into the project.
+//   node ui.mjs setup  [--dir <loop-dir>] [--topic "..."] [--audience "..."] [--no-open]
+//   node ui.mjs wait   --dir <loop-dir> [--timeout <seconds>]
+//   node ui.mjs report --dir <loop-dir> [--no-open]
+//   node ui.mjs atlas  --dir <loop-dir> [--check] [--no-open]
+//   node ui.mjs atlas  --dir <loop-dir> --live [--no-open] (read-only live viewer; runs until stopped)
 // `setup` starts the page in the background and returns its URL at once; `wait` blocks until the
 // user presses Save or Cancel (exit 0 saved, 2 cancelled/expired, 3 wait timeout).
 import { createServer } from "node:http";
@@ -14,12 +14,12 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, mkdtempSync, openSy
 import { dirname, join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { normalizeSetup, renderReport, loadLoop, GATES, ZONES, BASE_CSS } from "./lib.mjs";
+import { normalizeRubric, renderReport, loadLoop, DEFAULT_SECTIONS, ZONES, BASE_CSS } from "./lib.mjs";
 import { validateAtlas, checkAngleMap, renderAtlas } from "./atlas.mjs";
 import { startAtlasServer } from "./live-atlas.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const STATE_FILE = ".review-setup-state.json";
+const STATE_FILE = ".rubric-setup.json";
 
 const writeState = (dir, state) => writeFileSync(join(dir, STATE_FILE), JSON.stringify(state, null, 2) + "\n");
 const readState = (dir) => {
@@ -30,10 +30,10 @@ const readState = (dir) => {
 export function startSetupServer({ dir, port = 0, idleMinutes = 30, prefill = {} }) {
   dir = resolve(dir);
   mkdirSync(dir, { recursive: true });
-  const setupPath = join(dir, "review-setup.json");
+  const rubricPath = join(dir, "rubric.json");
   let existing = null;
-  if (existsSync(setupPath)) {
-    try { existing = normalizeSetup(JSON.parse(readFileSync(setupPath, "utf8"))); } catch { existing = null; }
+  if (existsSync(rubricPath)) {
+    try { existing = normalizeRubric(JSON.parse(readFileSync(rubricPath, "utf8"))); } catch { existing = null; }
   }
   const page = readFileSync(join(HERE, "setup.html"), "utf8").replace("/*BASE_CSS*/", BASE_CSS);
 
@@ -71,7 +71,7 @@ export function startSetupServer({ dir, port = 0, idleMinutes = 30, prefill = {}
     const path = new URL(req.url, "http://x").pathname;
     if (req.method === "GET" && path === "/") return send(res, 200, page, "text/html; charset=utf-8");
     if (req.method === "GET" && path === "/api/init") {
-      return send(res, 200, { setup: existing, prefill, gates: GATES, zones: ZONES, dir });
+      return send(res, 200, { rubric: existing, prefill, defaults: DEFAULT_SECTIONS, zones: ZONES, dir });
     }
     if (req.method === "POST" && (path === "/api/save" || path === "/api/cancel")) {
       // JSON-only POSTs force a CORS preflight, so other websites cannot drive this page.
@@ -82,11 +82,11 @@ export function startSetupServer({ dir, port = 0, idleMinutes = 30, prefill = {}
         send(res, 200, { ok: true });
         return res.on("finish", () => end("cancelled"));
       }
-      let setup;
-      try { setup = normalizeSetup(body); } catch (err) { return send(res, 400, { error: err.message }); }
-      writeFileSync(setupPath, JSON.stringify(setup, null, 2) + "\n");
-      send(res, 200, { ok: true, setup: setupPath });
-      return res.on("finish", () => end("saved", { setup: setupPath }));
+      let rubric;
+      try { rubric = normalizeRubric(body); } catch (err) { return send(res, 400, { error: err.message }); }
+      writeFileSync(rubricPath, JSON.stringify(rubric, null, 2) + "\n");
+      send(res, 200, { ok: true, rubric: rubricPath });
+      return res.on("finish", () => end("saved", { rubric: rubricPath }));
     }
     send(res, 404, { error: "not found" });
   });
@@ -138,10 +138,8 @@ async function main() {
   if (!cmd || args.help) die("usage: node ui.mjs setup [--dir <loop-dir>] | wait|report|atlas --dir <loop-dir> [options]", cmd ? 0 : 1);
   if (args.dir !== undefined && typeof args.dir !== "string") die("--dir requires a directory path");
   if (args.dir === undefined && cmd !== "setup") die("--dir <loop-dir> is required");
-  const dir = args.dir === undefined
-    ? mkdtempSync(join(tmpdir(), "research-evaluator-"))
-    : resolve(args.dir);
-  const prefill = Object.fromEntries(["goal", "audience"].filter((k) => typeof args[k] === "string").map((k) => [k, args[k]]));
+  const dir = args.dir === undefined ? mkdtempSync(join(tmpdir(), "research-evaluator-")) : resolve(args.dir);
+  const prefill = Object.fromEntries(["topic", "goal", "audience"].filter((k) => typeof args[k] === "string").map((k) => [k, args[k]]));
 
   if (cmd === "serve") {
     const { url, done } = await startSetupServer({ dir, port: Number(args.port ?? 0), idleMinutes: Number(args["idle-minutes"] ?? 30), prefill });
@@ -157,9 +155,9 @@ async function main() {
     if (prior?.status === "open" && prior.pid) {
       try { process.kill(prior.pid, 0); process.stdout.write(JSON.stringify({ url: prior.url, dir, already: true }) + "\n"); return; } catch { /* stale */ }
     }
-    const log = openSync(join(dir, ".review-setup.log"), "a");
+    const log = openSync(join(dir, ".rubric-setup.log"), "a");
     const childArgs = [fileURLToPath(import.meta.url), "serve", "--dir", dir];
-    for (const k of ["port", "idle-minutes", "goal", "audience"]) if (typeof args[k] === "string") childArgs.push(`--${k}`, args[k]);
+    for (const k of ["port", "idle-minutes", "topic", "goal", "audience"]) if (typeof args[k] === "string") childArgs.push(`--${k}`, args[k]);
     writeState(dir, { status: "starting", dir, at: new Date().toISOString() });
     spawn(process.execPath, childArgs, { detached: true, stdio: ["ignore", log, log] }).unref();
     for (let i = 0; i < 50; i++) {
@@ -171,7 +169,7 @@ async function main() {
       }
       await sleep(100);
     }
-    die(`setup page did not start; see ${join(dir, ".review-setup.log")}`);
+    die(`setup page did not start; see ${join(dir, ".rubric-setup.log")}`);
   }
 
   if (cmd === "wait") {
@@ -194,7 +192,7 @@ async function main() {
     let loop;
     try { loop = loadLoop(dir); } catch (err) { die(err.message); }
     const out = join(dir, "report.html");
-    writeFileSync(out, renderReport(loop.setup, loop.rounds));
+    writeFileSync(out, renderReport(loop.rubric, loop.rounds));
     if (args.open !== false) openInBrowser(pathToFileURL(out).href);
     process.stdout.write(JSON.stringify({ report: out, rounds: loop.rounds.length }) + "\n");
     return;

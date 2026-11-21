@@ -1,29 +1,33 @@
 # Synthetic fixture — offline collaboration memory
 
-**Fictional teaching and screenshot fixture only.** Every angle, round, score, source, access failure, role, and audit is invented. This is not real research, real literature coverage, a real audience's priorities, measured software performance, independent approval, or a proposal to execute research. SIM-S1–SIM-S8 are intentionally no-link labels for simulated sources; no real sources or source URLs are asserted.
+**Fictional teaching fixture only.** Every angle, round, score, source, access failure, role, and audit is invented. This is not real research, literature coverage, measured performance, audience endorsement, independent approval, or permission to run research. SIM-S1–SIM-S8 are intentionally no-link fictional labels, not actual sources.
 
-The scenario explores offline-first collaborative software for shared-workspace maintainers. Four areas hold 12 angles: four closed, three partial, two active, three open. Nine v1 rounds illustrate six scored REVISE outcomes, two unscored builder discards, and one BLOCKED with `scores: null`. Best combined score is R7 at 92 novelty / 93 audience impact against 94/94 gates. No round passes. Novelty always equals the lower of research and idea novelty.
+Four areas contain 12 angles: four closed, three partial, two active, three open. Nine v1 rounds illustrate six scored REVISE outcomes, two unscored builder discards, and one BLOCKED with all configured section scores null and `passed: false`. The illustrative potential-mode rubric has **Novelty 94, Impressiveness 94, Feasibility 80, Evidence quality 80**. No round passes.
 
-The renderer selects “best” by the highest sum of novelty and audience impact among scored rounds. That is display-only, not an average or additional gate; both gates still apply independently. This fixture keeps its rubric, audience, and constraints fixed. Real rounds under changed rubrics, audiences, or constraints are not directly comparable; preserve the caveat in `meta.standing` or `meta.standard`, rather than treating a score-history line as a controlled improvement trend.
+R7 scores **96 / 95 / 62 / 85** in that order: the first two sections pass, but **Feasibility fails**. Its total of 338 is the highest among these comparable synthetic rounds, for display only. Neither a total nor two high scores can override another section or a hard constraint. Actual sections are arbitrary and must come from the project's saved rubric, not this example.
+
+This fixture keeps sections, thresholds, audience, mode, and constraints fixed. Totals across changed configurations are not controlled comparisons; label that caveat rather than presenting a score-history line as evidence of improvement. Potential judgments are not measured success.
 
 ## Files and ownership
 
-- [playbook.md](playbook.md): standing packet and deliberately diverse next batch; builder/retrospective maintain it.
-- [angle-map.md](angle-map.md): durable explored/unexplored ledger, closures, leftovers, reopen conditions, and source-quality caveats. The retrospective keeps it synchronized with [atlas-data.json](atlas-data.json).
-- [lessons.md](lessons.md): scoped patterns and the checks they change; retrospective-owned.
-- [calibration.md](calibration.md): pre-review predictions versus fictional reviewer scores, with mode and comparability caveats; retrospective-owned. Simulated roles do not establish actual independence.
-- [validator-audits.md](validator-audits.md): auditor-owned findings and recommendations. No definition edits are claimed. Real edits require permission for a project-local copy; never modify global prompts by default.
-- `atlas.html`: generated renderer output, not hand-edited memory; generated separately and not a source of review authority.
+- [playbook.md](playbook.md): standing rubric/context, permissions, and diverse next batch; retrospective-owned.
+- [angle-map.md](angle-map.md): durable angle ledger, closure evidence, leftovers, and reopen conditions; synchronized with [atlas-data.json](atlas-data.json).
+- [lessons.md](lessons.md): scoped patterns and changed checks; retrospective-owned.
+- [calibration.md](calibration.md): invented pre-review predictions versus simulated scores for every section, with independence/comparability caveats.
+- [validator-audits.md](validator-audits.md): simulated findings/recommendations only. Real edits require explicit permission for a project-local definition, never a global prompt.
+- `atlas.html`: generated separately by the parent renderer; not hand-edited memory or review authority.
 
-The JSON's condensed rounds are **not** canonical evaluator reports; this fixture deliberately does not invent `review-roundN.json` receipts or link nonexistent candidate files. In real loops the builder saves actual reports verbatim and summaries point to those existing receipts. Reports remain immutable; audits may inform prospective review, not rewrite scores.
+Condensed atlas rounds are **not canonical evaluator reports**. This fixture invents no `evaluation-roundN.json`, `rubric.json`, candidate files, or receipt links. Real projects preserve their existing saved rubric and verbatim native custom reports; an audit can invalidate reliance or trigger a new review, not silently rewrite history. No actual independent contexts or fresh source checks occurred here.
 
-## Schema and copying
+## Dynamic schema
 
-The complete reusable [schema and ownership guide](../../templates/research-memory/README.md) documents fields. `meta.gate` uses numeric 1–100 `novelty` and `audience_impact` (default 94 each); `meta` is metadata, not a score dimension. Areas/angles have unique stable IDs. Angle statuses are `closed`, `partial`, `active`, `open`; every `map_name` matches a column-2 `Angle` row, with no stale or missing entries. Scored rounds provide all four integer fields `research_novelty`, `idea_novelty`, `novelty`, `audience_impact`; unscored rounds provide no numeric scores. R8 additionally records `scores: null`. No PASS can be inferred from a summary without a warranted actual report, constraints, and fresh independent evidence.
+See the complete [template schema guide](../../templates/research-memory/README.md). `meta.sections` holds arbitrary `{ name, threshold }` rows and `meta.judge_mode` is `potential` or `measured`; there is no `meta.gate`. Each scored round supplies every configured `{ name, score, threshold, passed? }` section, optionally including `why` and `lacking`. BLOCKED/discards are unscored, never filled with numeric placeholders. Angle `best` uses `{ kind, source, label }` with textual all-section summaries or explicitly unscored outcomes, not scalar novelty/impact fields.
 
-Start real work by copying the [empty templates](../../templates/research-memory/) into an explicitly authorized loop directory without overwriting existing files, then configure the real packet. Do not copy this fictional content as evidence. Keep evaluate-once behavior unchanged; memory does not authorize hidden loops. Without independent agents explicitly disclose sequential mode, not independent approval. No prototype is required merely to qualify for proposal review.
+Areas and angles retain stable unique IDs. Every exact unique `map_name` matches column 2 of the map, with no stale/missing rows. Statuses are `closed`, `partial`, `active`, `open`. Open means unsearched, not a proven gap. A high summary cannot establish PASS without a warranted actual report, every configured section, all hard constraints, and mode-appropriate evidence.
 
-All data/document/source paths in a loop resolve relative to that loop directory and its generated page. The links to templates above are repository documentation links, not atlas evidence. Simulated sources stay no-link labels; there are no fabricated external URLs.
+Start real work with the [empty templates](../../templates/research-memory/) copied into an authorized loop directory without overwriting research; configure from actual `rubric.json`. Do not copy fictional content as evidence or replace measured mode with potential. Evaluate-once remains one review. Use full packaged role instructions in fresh generic contexts; do not substitute similarly named Determine-specific global agents. Disclose sequential mode if independence is unavailable.
+
+Paths in actual loop data resolve relative to that loop directory and generated page. Repository guide links above are documentation, not atlas evidence. Fictional source labels remain no-link; no fabricated external URL is supplied.
 
 ## Render explicitly
 
@@ -34,4 +38,6 @@ node tools/ui.mjs atlas --dir examples/research-memory --check --no-open
 node tools/ui.mjs atlas --dir examples/research-memory
 ```
 
-`--check` compares the map's angle rows with JSON and validates renderer consistency before writing `atlas.html`; it does not verify research truth. `--no-open` suppresses the browser. The command reads local data and generates a static self-contained page. It does not perform network access, source discovery, research, agent execution, file watching, or automatic refresh. Rerun explicitly after authorized edits. The existing `report` command and evaluator review schema are unchanged.
+`--check` validates map/data consistency before writing and refuses missing/stale map rows without replacing existing HTML; it does not verify truth. `--no-open` suppresses the browser. Rendering reads selected local data and generates static HTML; it does no network access, research, source discovery, agents, directory scans, watching, or automatic refresh. Rerun after authorized edits. The custom `report` command still reads native `evaluation-roundN.json` reports.
+
+Original repository screenshots document the historical GitHub two-gate base, **not this updated local custom-rubric UI**. Rendering this fictional atlas is not evidence of real research or a live-model review.

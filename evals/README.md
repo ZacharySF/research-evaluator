@@ -1,5 +1,13 @@
 # Behavioral evaluations
 
+**Contract note.** These scenarios and the observed results in [results.md](results.md) were recorded when the evaluator used two fixed gates (`scores` object, `novelty = min(research_novelty, idea_novelty)`). The current evaluator scores the configured rubric sections instead. To rerun a scenario, translate its expectations:
+
+- `scores: null` becomes every configured section with `score: null` and `passed: false`.
+- "both configured gates" becomes the configured `pass_rule`, by default every section at or above its threshold.
+- Gate thresholds become section thresholds with the same names and values.
+
+Keep the historical receipts unchanged.
+
 These are development-time model evaluations, not live-model CI tests. The package is Markdown instructions; it has no compiled application or typecheck target. Markdown lint runs in CI, but passing lint does not prove the evaluator works.
 
 See the [observed development receipt](results.md) for the failing-before/passing-after regression and live research smoke outcomes.
@@ -31,3 +39,7 @@ Check the actual review, not the wording of the prompt:
 Also exercise an explicit impossible project constraint in a separate fresh review: a proposal requiring paid cloud inference when the brief prohibits network access and recurring costs. Even a compelling mechanism cannot pass that contract.
 
 Record the model, date, evidence, actual output and any failures when rerunning evaluations. Model behavior varies; these scenarios are not a statistical benchmark, a proof of novelty, or a guarantee about every supported host.
+
+## Idea pipeline backtest
+
+Give fresh `prior-art-triage` workers the one-line carried steps of candidates already killed by known prior art, without naming the killers. Recovery of most known killers (for example at least 3 of 4) shows the triage recipe covers the cooperative and adversarial home fields. Record the queries, opened sources, HTTP codes and recall. Misses should change the query templates, never the rubric.
