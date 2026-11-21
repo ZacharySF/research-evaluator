@@ -4,8 +4,16 @@
     "updated": "fixture day 4 (not an actual research date)",
     "goal": "Synthetic teaching example: explore offline-first collaborative editing mechanisms for maintainers of shared workspace software. No real research, sources, experiments, or audience endorsement are represented.",
     "standing": "All rounds, scores, source labels, and reviewer roles are simulated. No actual independent evaluation occurred; no proposal passes. Four areas retain three unsearched routes and two active investigations.",
-    "standard": "Illustrative gates: novelty 94 / audience impact 94. Novelty = min(research novelty, idea novelty). Best means highest novelty + audience impact among scored rounds, display only, not a third gate. Changed rubrics/audiences/constraints make rounds noncomparable; none changes in this synthetic fixture. Potential is not measured success. Sources are fictional no-link labels.",
-    "gate": { "novelty": 94, "audience_impact": 94 },
+    "standard": "Illustrative configured sections: Novelty 94, Impressiveness 94, Feasibility 80, Evidence quality 80. Potential mode, not measured success. All sections and hard constraints must pass. Best means highest total across comparable scored sections, display only, never another gate. Rubric, audience, mode, and constraints stay fixed here; changes would make comparisons unsuitable. Sources are fictional no-link labels.",
+    "sections": [
+      { "name": "Novelty", "threshold": 94 },
+      { "name": "Impressiveness", "threshold": 94 },
+      { "name": "Feasibility", "threshold": 80 },
+      { "name": "Evidence quality", "threshold": 80 }
+    ],
+    "judge_mode": "potential",
+    "pass_rule": "all sections >= threshold and no hard constraint violated",
+    "hard_constraints": [],
     "what_worked": "Within the synthetic scenario, separating merge correctness, permission authority, recovery cost, and user agency exposed genuinely different next questions.",
     "glossary": [
       ["Synthetic", "Invented fixture content, not a research finding or real source."],
@@ -22,7 +30,7 @@
   "angles": [
     {
       "id": "snapshot-delta", "area": "convergence", "name": "Snapshot-delta compaction", "short": "Snapshot deltas", "map_name": "Snapshot-delta compaction", "status": "closed",
-      "best": { "source": "R1", "kind": "judged", "novelty": 72, "audience_impact": 78 }, "rounds": [1],
+      "best": { "source": "R1", "kind": "judged", "label": "R1 synthetic: Novelty 72/94; Impressiveness 78/94; Feasibility 88/80; Evidence quality 82/80 · REVISE" }, "rounds": [1],
       "why_closed": "In the fictional scenario, SIM-S1 already specifies the same snapshot-plus-delta core; changing the workspace domain leaves no distinct mechanism.",
       "kill_sources": [{ "title": "SIM-S1 — simulated primary sync specification, compaction section; fictional overlap evidence only" }],
       "leftover": "Explain intent preservation rather than rebrand compaction; tracked separately as Intent-scoped undo.",
@@ -30,7 +38,7 @@
     },
     {
       "id": "intent-undo", "area": "convergence", "name": "Intent-scoped undo", "short": "Intent-scoped undo", "map_name": "Intent-scoped undo", "status": "partial",
-      "best": { "source": "R2", "kind": "judged", "novelty": 88, "audience_impact": 89 }, "rounds": [2],
+      "best": { "source": "R2", "kind": "judged", "label": "R2 synthetic: Novelty 88/94; Impressiveness 89/94; Feasibility 78/80; Evidence quality 76/80 · REVISE" }, "rounds": [2],
       "why_closed": "SIM-S2 covers causal selective undo; the remaining grouping rule has no distinguishing adversarial trace yet.",
       "kill_sources": [{ "title": "SIM-S2 — simulated primary selective-undo note, assumptions and limitations; fictional partial overlap" }],
       "leftover": "An intent boundary that remains interpretable across nested edits and concurrent deletion.",
@@ -51,7 +59,7 @@
     },
     {
       "id": "capability-window", "area": "permissions", "name": "Expiring capability windows", "short": "Capability windows", "map_name": "Expiring capability windows", "status": "partial",
-      "best": { "source": "R4", "kind": "judged", "novelty": 86, "audience_impact": 91 }, "rounds": [4],
+      "best": { "source": "R4", "kind": "judged", "label": "R4 synthetic: Novelty 86/94; Impressiveness 91/94; Feasibility 76/80; Evidence quality 79/80 · REVISE" }, "rounds": [4],
       "why_closed": "SIM-S4 already has expiry leases; a new reconnect reconciliation rule remains underspecified.",
       "kill_sources": [{ "title": "SIM-S4 — simulated primary capability design, expiry/reconnect sections; fictional overlap" }],
       "leftover": "Make locally accepted edits and remotely rejected edits explainable under explicit expiry assumptions.",
@@ -59,14 +67,14 @@
     },
     {
       "id": "partition-policy", "area": "permissions", "name": "Partition policy negotiation", "short": "Partition policies", "map_name": "Partition policy negotiation", "status": "active",
-      "best": { "source": "R8", "label": "R8 BLOCKED · no scores" }, "rounds": [8],
+      "best": { "source": "R8", "kind": "blocked", "label": "R8 synthetic BLOCKED · all section scores null" }, "rounds": [8],
       "why_closed": "Fictional review is paused: the decision-critical policy annex was unavailable in the simulated access scenario.",
       "leftover": "Unknown until the annex establishes whether negotiation changes authority or merely labels a conflict.",
-      "note": "Simulated BLOCKED, scores null. Next: obtain authorized primary annex access and inspect the relevant semantics. No independent review or prototype requirement is implied.", "docs": ["angle-map.md", "playbook.md"]
+      "note": "Simulated BLOCKED, all section scores null. Next: obtain authorized primary annex access and inspect the relevant semantics. No independent review or prototype requirement is implied.", "docs": ["angle-map.md", "playbook.md"]
     },
     {
       "id": "checkpoint", "area": "recovery", "name": "Checkpoint resurrection", "short": "Checkpoint restore", "map_name": "Checkpoint resurrection", "status": "closed",
-      "best": { "source": "R5", "kind": "judged", "novelty": 70, "audience_impact": 82 }, "rounds": [5],
+      "best": { "source": "R5", "kind": "judged", "label": "R5 synthetic: Novelty 70/94; Impressiveness 82/94; Feasibility 86/80; Evidence quality 81/80 · REVISE" }, "rounds": [5],
       "why_closed": "SIM-S5 already restores this checkpoint/log combination; calling recovery collaborative adds no residual mechanism.",
       "kill_sources": [{ "title": "SIM-S5 — simulated primary recovery manual, restore and log replay; fictional overlap" }],
       "leftover": "Repair only a bounded affected region; separate Repair-cost contracts angle.",
@@ -74,8 +82,8 @@
     },
     {
       "id": "repair-contract", "area": "recovery", "name": "Repair-cost contracts", "short": "Repair-cost contract", "map_name": "Repair-cost contracts", "status": "active",
-      "best": { "source": "R7", "kind": "judged", "novelty": 92, "audience_impact": 93 }, "rounds": [7],
-      "why_closed": "The synthetic best candidate still lacks an argument that its dependency summary bounds cascading repair; both gates are missed.",
+      "best": { "source": "R7", "kind": "judged", "label": "R7 synthetic: Novelty 96/94; Impressiveness 95/94; Feasibility 62/80; Evidence quality 85/80 · REVISE" }, "rounds": [7],
+      "why_closed": "Highest display-only synthetic total, but the missing dependency-to-repair bound fails Feasibility despite passing the first two thresholds.",
       "kill_sources": [{ "title": "SIM-S7 — simulated primary dependency-repair design, failure assumptions; fictional partial overlap" }],
       "leftover": "A conditional contract linking retained dependency information to worst-case repair work.",
       "note": "Next: derive a bound or a counterexample on paper, with explicit information assumptions. No implementation is required to assess the proposal.", "docs": ["playbook.md", "calibration.md", "validator-audits.md"]
@@ -87,7 +95,7 @@
     },
     {
       "id": "conflict-preview", "area": "agency", "name": "Conflict preview explanations", "short": "Conflict previews", "map_name": "Conflict preview explanations", "status": "partial",
-      "best": { "source": "R6", "kind": "judged", "novelty": 90, "audience_impact": 87 }, "rounds": [6],
+      "best": { "source": "R6", "kind": "judged", "label": "R6 synthetic: Novelty 90/94; Impressiveness 87/94; Feasibility 78/80; Evidence quality 77/80 · REVISE" }, "rounds": [6],
       "why_closed": "SIM-S6 already previews conflicting operations; the candidate has not separated explanation quality from prettier presentation.",
       "kill_sources": [{ "title": "SIM-S6 — simulated primary conflict-preview design, interaction limitations; fictional partial overlap" }],
       "leftover": "A falsifiable explanation guarantee tied to choosing a correct resolution, not visual polish.",
@@ -108,15 +116,50 @@
     }
   ],
   "rounds": [
-    { "n": 1, "angle": "snapshot-delta", "title": "Snapshot-delta v1 (synthetic)", "verdict": "REVISE", "research_novelty": 76, "idea_novelty": 72, "novelty": 72, "audience_impact": 78, "one_line": "Simulated review: SIM-S1 covers the core; close this version." },
-    { "n": 2, "angle": "intent-undo", "title": "Intent undo v1 (synthetic)", "verdict": "REVISE", "research_novelty": 90, "idea_novelty": 88, "novelty": 88, "audience_impact": 89, "one_line": "Simulated review: residual grouping guarantee needs a distinguishing trace." },
-    { "n": 3, "angle": "instant-revoke", "title": "Instant revocation v1 (synthetic)", "verdict": "discarded", "one_line": "Simulated builder kill: an isolated replica has no new revocation information; no evaluator score." },
-    { "n": 4, "angle": "capability-window", "title": "Capability windows v1 (synthetic)", "verdict": "REVISE", "research_novelty": 89, "idea_novelty": 86, "novelty": 86, "audience_impact": 91, "one_line": "Simulated review: expiry is covered; specify a distinct reconciliation rule." },
-    { "n": 5, "angle": "checkpoint", "title": "Checkpoint restore v1 (synthetic)", "verdict": "REVISE", "research_novelty": 74, "idea_novelty": 70, "novelty": 70, "audience_impact": 82, "one_line": "Simulated review: SIM-S5 already has checkpoint/log restore; close this version." },
-    { "n": 6, "angle": "conflict-preview", "title": "Conflict preview v1 (synthetic)", "verdict": "REVISE", "research_novelty": 92, "idea_novelty": 90, "novelty": 90, "audience_impact": 87, "one_line": "Simulated review: explanation contribution and audience task remain vague." },
-    { "n": 7, "angle": "repair-contract", "title": "Repair contract v1 (synthetic)", "verdict": "REVISE", "research_novelty": 95, "idea_novelty": 92, "novelty": 92, "audience_impact": 93, "one_line": "Simulated review: best combined score, but no supported bound on cascading repair; neither gate passes." },
-    { "n": 8, "angle": "partition-policy", "title": "Partition policy v1 (synthetic)", "verdict": "BLOCKED", "scores": null, "one_line": "Simulated access failure: decisive primary policy annex unavailable; no scores, not a missing prototype." },
-    { "n": 9, "angle": "semantic-resolve", "title": "Semantic resolver v1 (synthetic)", "verdict": "discarded", "one_line": "Simulated builder kill: equivalent to SIM-S8 priority rule; no evaluator score." }
+    { "n": 1, "angle": "snapshot-delta", "title": "Snapshot-delta v1 (synthetic)", "verdict": "REVISE", "one_line": "Simulated review: SIM-S1 covers the core; close this version.", "sections": [
+      { "name": "Novelty", "score": 72, "threshold": 94, "passed": false },
+      { "name": "Impressiveness", "score": 78, "threshold": 94, "passed": false },
+      { "name": "Feasibility", "score": 88, "threshold": 80, "passed": true },
+      { "name": "Evidence quality", "score": 82, "threshold": 80, "passed": true }
+    ] },
+    { "n": 2, "angle": "intent-undo", "title": "Intent undo v1 (synthetic)", "verdict": "REVISE", "one_line": "Simulated review: residual grouping guarantee needs a distinguishing trace and feasibility argument.", "sections": [
+      { "name": "Novelty", "score": 88, "threshold": 94, "passed": false },
+      { "name": "Impressiveness", "score": 89, "threshold": 94, "passed": false },
+      { "name": "Feasibility", "score": 78, "threshold": 80, "passed": false },
+      { "name": "Evidence quality", "score": 76, "threshold": 80, "passed": false }
+    ] },
+    { "n": 3, "angle": "instant-revoke", "title": "Instant revocation v1 (synthetic)", "verdict": "discarded", "sections": [], "one_line": "Simulated builder kill: an isolated replica has no new revocation information; no evaluator score." },
+    { "n": 4, "angle": "capability-window", "title": "Capability windows v1 (synthetic)", "verdict": "REVISE", "one_line": "Simulated review: expiry is covered; specify and support a distinct reconciliation rule.", "sections": [
+      { "name": "Novelty", "score": 86, "threshold": 94, "passed": false },
+      { "name": "Impressiveness", "score": 91, "threshold": 94, "passed": false },
+      { "name": "Feasibility", "score": 76, "threshold": 80, "passed": false },
+      { "name": "Evidence quality", "score": 79, "threshold": 80, "passed": false }
+    ] },
+    { "n": 5, "angle": "checkpoint", "title": "Checkpoint restore v1 (synthetic)", "verdict": "REVISE", "one_line": "Simulated review: SIM-S5 already has checkpoint/log restore; close this version.", "sections": [
+      { "name": "Novelty", "score": 70, "threshold": 94, "passed": false },
+      { "name": "Impressiveness", "score": 82, "threshold": 94, "passed": false },
+      { "name": "Feasibility", "score": 86, "threshold": 80, "passed": true },
+      { "name": "Evidence quality", "score": 81, "threshold": 80, "passed": true }
+    ] },
+    { "n": 6, "angle": "conflict-preview", "title": "Conflict preview v1 (synthetic)", "verdict": "REVISE", "one_line": "Simulated review: explanation contribution, audience task, and supporting argument remain vague.", "sections": [
+      { "name": "Novelty", "score": 90, "threshold": 94, "passed": false },
+      { "name": "Impressiveness", "score": 87, "threshold": 94, "passed": false },
+      { "name": "Feasibility", "score": 78, "threshold": 80, "passed": false },
+      { "name": "Evidence quality", "score": 77, "threshold": 80, "passed": false }
+    ] },
+    { "n": 7, "angle": "repair-contract", "title": "Repair contract v1 (synthetic)", "verdict": "REVISE", "one_line": "Highest synthetic total and first two thresholds passed, but Feasibility fails: no supported cascade bound. All configured sections still apply.", "sections": [
+      { "name": "Novelty", "score": 96, "threshold": 94, "passed": true },
+      { "name": "Impressiveness", "score": 95, "threshold": 94, "passed": true },
+      { "name": "Feasibility", "score": 62, "threshold": 80, "passed": false, "why": "Synthetic missing information-to-repair argument.", "lacking": "A conditional bound or explicit counterexample under stated dependency assumptions." },
+      { "name": "Evidence quality", "score": 85, "threshold": 80, "passed": true }
+    ] },
+    { "n": 8, "angle": "partition-policy", "title": "Partition policy v1 (synthetic)", "verdict": "BLOCKED", "one_line": "Simulated access failure: decisive primary policy annex unavailable; all section scores null, not a missing prototype.", "sections": [
+      { "name": "Novelty", "score": null, "threshold": 94, "passed": false },
+      { "name": "Impressiveness", "score": null, "threshold": 94, "passed": false },
+      { "name": "Feasibility", "score": null, "threshold": 80, "passed": false },
+      { "name": "Evidence quality", "score": null, "threshold": 80, "passed": false }
+    ] },
+    { "n": 9, "angle": "semantic-resolve", "title": "Semantic resolver v1 (synthetic)", "verdict": "discarded", "sections": [], "one_line": "Simulated builder kill: equivalent to SIM-S8 priority rule; no evaluator score." }
   ],
   "frontier": [
     { "angle": "repair-contract", "budget_first": true, "why_promising": "Synthetic active route: a precise dependency-information contract could make repair cost predictable.", "kill_risk": "A missing dependency can trigger an unbounded cascade. Acceptance check: a conditional bound or explicit counterexample, not a prototype." },
@@ -124,18 +167,18 @@
     { "angle": "accessible-conflict", "why_promising": "Synthetic unsearched human-facing route diversifies the batch beyond protocol and cost arguments.", "kill_risk": "It may be only an interface relabeling. First define an action-context guarantee and a strong nonvisual baseline." }
   ],
   "blockers": [
-    { "title": "Simulated policy-annex access gap", "text": "R8 is BLOCKED with scores null. The fictional attempt could inspect an overview but not the decision-critical annex. Obtain authorized annex access before judging this angle; the other routes remain available within scope.", "refs": ["R8", "angle-map.md"] },
-    { "title": "No actual independent reviewers or receipts", "text": "This fixture contains invented summaries only, not actual review-round JSON reports. The simulated separate-reviewer role is a teaching device; it establishes neither independent research nor approval.", "refs": ["README.md", "calibration.md"] }
+    { "title": "Simulated policy-annex access gap", "text": "R8 is BLOCKED with every section score null and passed false. The fictional attempt could inspect an overview but not the decision-critical annex. Obtain authorized annex access before judging this angle; the other routes remain available within scope.", "refs": ["R8", "angle-map.md"] },
+    { "title": "No actual independent reviewers or receipts", "text": "This fixture contains invented summaries only, not actual evaluation-roundN.json reports. The simulated separate-reviewer role is a teaching device; it establishes neither independent research nor approval.", "refs": ["README.md", "calibration.md"] }
   ],
   "risks": [
     { "title": "Synthetic sources are not evidence", "text": "SIM-S1–SIM-S8 are invented no-link labels, not real citations or claims about existing software.", "check": "Replace the entire scenario with actual located primary sources and receipts before using it for a real decision." },
     { "title": "Constraints can disappear in a pivot", "text": "Weakening offline revocation to expiry changes the guarantee; a useful fallback cannot silently become the original promise.", "check": "Keep the original constraint visible and obtain any required user authorization before changing it." },
-    { "title": "A best score is not a pass", "text": "R7's simulated 92/93 is below both 94 gates, and its repair premise is unresolved.", "check": "Use the actual current review, constraints, and independence evidence; never promote an atlas summary into approval." }
+    { "title": "Two high sections are not a pass", "text": "R7's synthetic Novelty 96 and Impressiveness 95 exceed 94, but Feasibility 62 fails 80; Evidence quality is 85/80. Its highest total is display-only.", "check": "Require every configured section and every hard constraint using the actual report and mode-appropriate evidence; never promote an atlas summary into approval." }
   ],
   "latest_batch": {
     "date": "fixture day 4",
     "results": [
-      { "angle": "repair-contract", "agent": "simulated-recovery-role", "outcome": "active after R7 REVISE", "text": "Best synthetic result remains 92/93; now isolate cascading dependencies rather than resubmit unchanged text." },
+      { "angle": "repair-contract", "agent": "simulated-recovery-role", "outcome": "active after R7 REVISE", "text": "Synthetic scores: Novelty 96, Impressiveness 95, Feasibility 62, Evidence quality 85. Isolate cascading dependencies; passing the first two sections cannot hide failed Feasibility." },
       { "angle": "partition-policy", "agent": "simulated-policy-role", "outcome": "paused after R8 BLOCKED", "text": "Keep null scores and the exact missing annex; no proxy numbers." },
       { "angle": "semantic-resolve", "agent": "simulated-agency-role", "outcome": "closed after R9 discard", "text": "Equivalent rule found in the fictional baseline; retain the failure and reopen condition." }
     ]
@@ -143,15 +186,15 @@
   "lessons": [
     { "id": "L1", "pattern": "Domain changes can hide identical machinery.", "evidence": "Synthetic R1/SIM-S1 and R5/SIM-S5 close two repackaged mechanisms.", "check": "State the guarantee remaining after the strongest baseline, with a distinguishing trace." },
     { "id": "L2", "pattern": "Partition claims need an information premise.", "evidence": "Synthetic R3/SIM-S3 defeats instantaneous revocation without a new local observation.", "check": "Write two indistinguishable local histories before claiming a remote event is known." },
-    { "id": "L3", "pattern": "Explanation polish is not yet an explanation contribution.", "evidence": "Synthetic R6 is 90/87; SIM-S6 already previews operations. R9 relabels SIM-S8.", "check": "Specify the user's decision and a different observable guarantee, not renamed controls." },
-    { "id": "L4", "pattern": "Component novelty cannot hide a familiar overall idea.", "evidence": "Synthetic R7: research novelty 95, idea novelty 92, so novelty is 92.", "check": "Assess both dimensions and take their minimum; test the dependency-summary premise." }
+    { "id": "L3", "pattern": "Explanation polish is not yet an explanation contribution.", "evidence": "Synthetic R6: Novelty 90, Impressiveness 87, Feasibility 78, Evidence quality 77; SIM-S6 already previews operations. R9 relabels SIM-S8.", "check": "Specify the user's decision and a different observable guarantee, not renamed controls." },
+    { "id": "L4", "pattern": "High novelty and appeal cannot compensate for failed feasibility.", "evidence": "Synthetic R7: Novelty 96, Impressiveness 95, Feasibility 62, Evidence quality 85 against thresholds 94/94/80/80.", "check": "Check all configured sections and all hard constraints independently; challenge the dependency-summary premise." }
   ],
   "calibration": [
-    { "name": "Simulated builder", "candidate": "R1 snapshot-delta v1", "estimate": "96 / 96 (pre-review, invented)", "judge": "72 / 78 (simulated reviewer)", "outcome": "REVISE; overestimated by 24/18 after fictional primary overlap." },
-    { "name": "Simulated builder", "candidate": "R2 intent undo v1", "estimate": "94 / 95 (pre-review, invented)", "judge": "88 / 89 (simulated reviewer)", "outcome": "REVISE; overestimated by 6/6; require a distinguishing trace." },
-    { "name": "Simulated builder", "candidate": "R4 capability windows v1", "estimate": "92 / 94 (pre-review, invented)", "judge": "86 / 91 (simulated reviewer)", "outcome": "REVISE; overestimated by 6/3; lease overlap remains." },
-    { "name": "Simulated builder", "candidate": "R7 repair contract v1", "estimate": "95 / 95 (pre-review, invented)", "judge": "92 / 93 (simulated reviewer)", "outcome": "REVISE; overestimated by 3/2; a narrowing error is not evidence of future success." },
-    { "name": "Simulated builder", "candidate": "R8 partition policy v1", "estimate": "not recorded", "judge": "BLOCKED; scores null", "outcome": "No numeric calibration: inaccessible decisive evidence cannot be replaced with an estimate." }
+    { "name": "Simulated builder", "candidate": "R1 snapshot-delta v1", "estimate": "Novelty 96; Impressiveness 96; Feasibility 90; Evidence quality 85 (pre-review, invented)", "judge": "Novelty 72; Impressiveness 78; Feasibility 88; Evidence quality 82 (simulated reviewer)", "outcome": "REVISE; overestimated by 24/18/2/3 after fictional primary overlap." },
+    { "name": "Simulated builder", "candidate": "R2 intent undo v1", "estimate": "Novelty 94; Impressiveness 95; Feasibility 85; Evidence quality 84 (pre-review, invented)", "judge": "Novelty 88; Impressiveness 89; Feasibility 78; Evidence quality 76 (simulated reviewer)", "outcome": "REVISE; overestimated by 6/6/7/8; require a distinguishing trace." },
+    { "name": "Simulated builder", "candidate": "R4 capability windows v1", "estimate": "Novelty 92; Impressiveness 94; Feasibility 84; Evidence quality 85 (pre-review, invented)", "judge": "Novelty 86; Impressiveness 91; Feasibility 76; Evidence quality 79 (simulated reviewer)", "outcome": "REVISE; overestimated by 6/3/8/6; lease overlap remains." },
+    { "name": "Simulated builder", "candidate": "R7 repair contract v1", "estimate": "Novelty 97; Impressiveness 97; Feasibility 90; Evidence quality 88 (pre-review, invented)", "judge": "Novelty 96; Impressiveness 95; Feasibility 62; Evidence quality 85 (simulated reviewer)", "outcome": "REVISE; overestimated by 1/2/28/3; first two sections pass, Feasibility fails." },
+    { "name": "Simulated builder", "candidate": "R8 partition policy v1", "estimate": "not recorded", "judge": "BLOCKED; every section score null", "outcome": "No numeric calibration: inaccessible decisive evidence cannot be replaced with an estimate." }
   ],
   "calibration_notes": [
     "Every estimate and reviewer score is invented for this synthetic fixture. Separate builder/reviewer roles model the desired comparison, not actual independent agents or source checks.",
@@ -160,6 +203,6 @@
   ],
   "audits": [
     { "date": "fixture day 2 (synthetic)", "rounds": [1, 2, 4], "finding": "Simulated auditor notices that a secondary summary of SIM-S2 was treated like primary-source coverage. Original scores remain untouched; no actual source audit occurred.", "edits": "Fictional recommendation only: require source version, inspected section, applicability, and later-work coverage in an authorized local evaluator copy. No file edit is claimed." },
-    { "date": "fixture day 4 (synthetic)", "rounds": [7, 8], "finding": "Simulated auditor flags component-score anchoring at R7 and any temptation to fill R8's null scores. R7 already uses min(95,92)=92; R8 remains BLOCKED.", "edits": "Fictional recommendation only: foreground minimum-score arithmetic and access gaps. Preserve 94/94 gates, historical scores, and the no-prototype-prerequisite rule; never change installed global prompts." }
+    { "date": "fixture day 4 (synthetic)", "rounds": [7, 8], "finding": "Simulated auditor flags a first-two-section shortcut at R7 and any temptation to fill R8's null scores. R7 remains REVISE because Feasibility 62 fails 80, despite Novelty 96 and Impressiveness 95; Evidence quality is 85. R8 remains BLOCKED.", "edits": "Fictional recommendation only: require every configured section and hard constraint, disclose mode/access limits, and preserve historical scores. No installed global prompt edits or measured achievements are claimed." }
   ]
 }

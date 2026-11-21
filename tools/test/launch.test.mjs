@@ -8,28 +8,27 @@ import { fileURLToPath } from "node:url";
 
 const cli = fileURLToPath(new URL("../ui.mjs", import.meta.url));
 
-test("setup opens without a project directory and saves only in its temporary session", async () => {
+test("setup opens without a project directory and saves a custom rubric only in its temporary session", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "re-launch-cwd-"));
   let session;
   try {
     session = JSON.parse(execFileSync(process.execPath, [cli, "setup", "--no-open"], { cwd, encoding: "utf8" }));
     assert.notEqual(session.dir, cwd);
     assert.deepEqual(readdirSync(cwd), [], "launch must not write into the project without permission");
-    const initial = await (await fetch(session.url + "/api/init")).json();
-    assert.equal(initial.dir, session.dir);
+    assert.equal((await (await fetch(session.url + "/api/init")).json()).dir, session.dir);
     const response = await fetch(session.url + "/api/save", {
       method: "POST", headers: { "content-type": "application/json" },
-      body: JSON.stringify({ goal: "UI-first research", audience: "Systems researchers", thresholds: { novelty: 91, audience_impact: 87 }, constraints: ["Public sources only"] }),
+      body: JSON.stringify({ topic: "UI-first research", judge_mode: "measured", sections: [{ name: "Reproducibility", threshold: 88, requirements: "Public artifacts" }], hard_constraints: ["Public sources only"] }),
     });
     assert.equal(response.status, 200);
     const saved = await response.json();
-    assert.equal(saved.setup, join(session.dir, "review-setup.json"));
+    assert.equal(saved.rubric, join(session.dir, "rubric.json"));
     const result = JSON.parse(execFileSync(process.execPath, [cli, "wait", "--dir", session.dir], { encoding: "utf8", timeout: 10000 }));
     assert.equal(result.status, "saved");
-    const setup = JSON.parse(readFileSync(saved.setup, "utf8"));
-    assert.equal(setup.goal, "UI-first research");
-    assert.deepEqual(setup.thresholds, { novelty: 91, audience_impact: 87 });
-    assert.deepEqual(setup.constraints, ["Public sources only"]);
+    const rubric = JSON.parse(readFileSync(saved.rubric, "utf8"));
+    assert.deepEqual(rubric.sections.map((s) => [s.name, s.threshold]), [["Reproducibility", 88]]);
+    assert.equal(rubric.judge_mode, "measured");
+    assert.deepEqual(rubric.hard_constraints, ["Public sources only"]);
     assert.deepEqual(readdirSync(cwd), []);
   } finally {
     if (session) {

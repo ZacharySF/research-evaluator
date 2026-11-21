@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { startAtlasServer } from "../live-atlas.mjs";
 
-const fixture = { meta: { title: "Live research", gate: { novelty: 94, audience_impact: 94 } }, areas: [{ id: "systems", name: "Systems" }], angles: [{ id: "logs", name: "Logs", map_name: "Logs", area: "systems", status: "open" }] };
+const fixture = { meta: { title: "Live research", sections: [{ name: "Rigor", threshold: 88 }, { name: "Reproducibility", threshold: 80 }], judge_mode: "potential" }, areas: [{ id: "systems", name: "Systems" }], angles: [{ id: "logs", name: "Logs", map_name: "Logs", area: "systems", status: "open" }] };
 
 test("live snapshots follow research changes, reject partial writes, and recover without serving unrelated files", async (t) => {
   const dir = mkdtempSync(join(tmpdir(), "live-atlas-test-"));

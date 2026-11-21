@@ -1,40 +1,50 @@
 # Durable research memory
 
-Optional files for an explicitly authorized improvement loop, not permission to start one. Evaluate-once still returns exactly one evaluator JSON review. Copy these templates into a user-authorized loop directory, preserving any existing files; do not write into installed skills or global agent directories. Configure the goal, audience, constraints, permissions, limits, and gates from the review packet. Empty arrays are intentional: no research evidence is preloaded.
+Optional memory for an explicitly authorized improvement loop, not permission to start one. Evaluate-once still returns one evaluator review. Copy into an authorized project directory without overwriting existing research, `rubric.json`, or `evaluation-roundN.json`; never write memory into installed skill/global agent directories. Empty research arrays are intentional: no evidence is preloaded.
 
 ## Ownership and lifecycle
 
-- Builder: owns candidate/version receipts and saved verbatim `review-roundN.json` reports; those reports remain immutable evidence.
-- Research retrospective: maintains [playbook](playbook.md), [angle map](angle-map.md), [lessons](lessons.md), [calibration](calibration.md), and [atlas data](atlas-data.json) from actual receipts, including discards and blockers. Chooses a deliberately diverse next batch, not more variants of the last failure.
-- Validator-auditor: owns [audit history](validator-audits.md); may change only an explicitly authorized local evaluator copy, never global prompts by default. It cannot change gates, past scores, or verdicts.
-- Atlas renderer: owns generated `atlas.html`; do not hand-edit that output. Data and Markdown remain human-readable sources of truth and must be updated together.
+- User: owns the actual `rubric.json`, every section/threshold, requirements, scoring guides, hard constraints, mode, and acceptance rule.
+- Builder: preserves candidate/version receipts and verbatim `evaluation-roundN.json` custom reports. Reports remain immutable evidence.
+- Retrospective: maintains [playbook](playbook.md), [angle map](angle-map.md), [lessons](lessons.md), [calibration](calibration.md), and [atlas data](atlas-data.json) from receipts, including discards and blockers. Chooses diverse next questions rather than renamed failures.
+- Auditor: owns [audit history](validator-audits.md); edits only an explicitly authorized project-local evaluator definition. No global instruction changes, historical score rewrites, or relaxed criteria.
+- Renderer: generates `atlas.html`. Do not hand-edit it; JSON and Markdown must stay synchronized.
 
-Without independent agents, disclose sequential mode in memory and reports; never label it independent approval. Missing a prototype is not a review prerequisite. Audits and retrospectives do not start hidden research loops or loosen user limits.
+Use the complete packaged role definitions in fresh generic contexts, not similarly named global Determine-specific agents. Without independent agents disclose sequential mode, never independent approval. Potential mode need not have a prototype; measured mode requires rubric-specified measurements. Neither memory nor feedback authorizes hidden loops or loosened user limits.
 
-## Atlas data schema
+## Saved rubric and review contracts
 
-`atlas-data.json` is an atlas projection, **not** the evaluator's review JSON schema. The evaluator contract and existing report command are unchanged.
+The saved rubric is `{ topic, goal, audience, judge_mode: "potential" | "measured", sections: [{ name, threshold, requirements, scoring_guide }], hard_constraints, pass_rule, notes }`. It is authoritative: configure the atlas from this file, never overwrite it with template defaults.
 
-- `meta`: `title`, `updated`, `goal`, optional `standing`/`standard`, and `gate: { novelty, audience_impact }` (numeric 1–100, default 94/94; user-configurable). Optional `what_worked` and `glossary` pairs add context.
-- `areas`: objects with stable unique `id`, `name`, optional `description`.
-- `angles`: stable unique `id`, valid `area`, `name`, unique `map_name`, and `status` (`closed`, `partial`, `active`, `open`). Each `map_name` begins exactly one column-2 entry in angle-map.md; the header is `Angle` or `Angle to try`. Avoid overlapping name prefixes. Optional `short`, `rounds` numbers, `best`, `why_closed`, `leftover`, `note`, `kill_sources`, and `docs` explain provenance and residuals. `kill_sources` are `{ title, url? }`; use real links only. Record closure source and reopen condition in the map and `note`, with source quality and uncertainty.
-- `rounds`: positive sequential integer `n`, valid `angle`, `title`, `verdict`, `one_line`; optional `file` links a real saved candidate/receipt. Every scored round includes all four integer 1–100 fields: `research_novelty`, `idea_novelty`, `novelty` (their minimum), and `audience_impact`. For BLOCKED use `scores: null` and omit all numeric score fields; preserve the verbatim blocked review separately. Discards are unscored builder outcomes, not evaluator verdicts. Never infer PASS from a high-score summary; the report must also warrant it.
-- `best`: optional per-angle summary `{ source, kind?, novelty?, audience_impact?, label? }`; scored/discard summaries use `kind: "judged"` or `"discard"`. For a blocked summary use a descriptive `label` without numeric scores or a made-up kind. Keep summaries consistent with saved rounds.
-- `frontier`: `{ angle, why_promising, kill_risk?, budget_first? }`; explain independent routes and what could refute each. `blockers`: `{ title, text, refs? }`. `risks`: `{ title, text, check? }`.
-- `latest_batch`: optional `{ date, results: [{ angle, agent?, outcome, text }] }`. `lessons`: `{ id, pattern, evidence, check }`. `calibration`: `{ name, candidate, estimate, judge, outcome }`, with optional `calibration_notes` strings. Record pre-review predictions, actual mode, source quality, and independent-score comparison or its absence.
-- `audits`: `{ date, rounds?, finding, edits? }`; recommendations without authorization must not be described as applied changes.
+The native custom evaluator report remains `{ verdict, round, sections: [{ name, score, threshold, passed, why, lacking }], prior_art: [{ title, url, overlap, what_remains_new }], fact_checks: [{ claim, status, evidence }], grill: [{ question, recommendation }], loopy_receipt, next_research_action, summary }`. Each configured section is present. `BLOCKED` sections use `score: null` and `passed: false`, never invented numeric placeholders. Save these reports as `evaluation-roundN.json`, not a parallel report format.
 
-The renderer labels the scored round with the highest **sum** of novelty and audience impact as “best.” This is a display-only ordering, not an average, extra score, gate, or approval rule; both configured gates still apply independently. Rounds under changed rubrics, audiences, or constraints are not directly comparable. Record such caveats in `meta.standing` or `meta.standard` and in calibration rather than implying a fair longitudinal ranking.
+## Atlas projection schema
 
-All paths and report/source links resolve relative to the loop directory (and generated page), not the repository or shell directory. Do not invent file links for receipts that do not exist.
+`atlas-data.json` is a projection, **not** a replacement evaluator report or rubric.
 
-## Render or check explicitly
+- `meta`: `title`, `updated`, `goal`, `standing`, `standard`, `sections: [{ name, threshold }]`, `judge_mode` (`potential` or `measured`), `pass_rule`, and `hard_constraints`. Copy the current rubric's exact pass rule and every hard constraint; the last two fields may be omitted only for empty/default metadata. Names are unique; thresholds are numbers from 1–100. The empty template illustrates Novelty 94, Impressiveness 94, Feasibility 80, Evidence quality 80. Copy the actual configured sections and mode instead of imposing those defaults. Optional `what_worked` and `glossary` pairs add context. There is no `meta.gate` or hidden acceptance pair.
+- `areas`: unique stable `{ id, name, description? }` objects. Empty is valid.
+- `angles`: unique stable `id`, valid `area`, `name`, unique `map_name`, and `status` (`closed`, `partial`, `active`, `open`). Each `map_name` matches exactly one column-2 entry in `angle-map.md`, headed `Angle` or `Angle to try`; keep names exact and avoid overlapping prefixes. Optional `short`, `rounds` numbers, `best`, `why_closed`, `leftover`, `note`, `kill_sources`, and `docs` explain provenance. `kill_sources` are `{ title, url? }`; use real links only. Record source quality, closure evidence, and reopening condition. Empty is valid.
+- `rounds`: `{ n, angle, title, file?, verdict, one_line, sections, pass_rule? }`, with positive sequential `n`, a valid angle ID, and optional `file` linking an actual receipt. Every scored round includes **every section configured for that historical round** as `{ name, score, threshold, passed?, why?, lacking? }`, with numeric 1–100 scores and original thresholds. Preserve historical section sets/thresholds if the current rubric changes; only rounds matching current names and thresholds participate in display-only best ranking. Preserve a different historical `pass_rule` when applicable. No scalar novelty/impact fields. Empty rounds are valid.
+- For a `BLOCKED` or builder-discard round, `sections` may be absent/empty or contain every configured section with `score: null` and `passed: false`; never mix guessed numbers into unscored outcomes. Preserve the full native blocked review separately. Discard is an unscored builder outcome, not a reviewer verdict.
+- Angle `best`: optional `{ kind, source, label }`, where `source` names the real/simulated round or explicitly identified estimate, `kind` distinguishes `judged`, `discard`, or `blocked`, and `label` is **text** describing all scored sections or the unscored outcome. A scout estimate must be explicitly labeled an estimate, not a judged score. Do not add scalar novelty/impact scores here.
+- `frontier`: `{ angle, why_promising, kill_risk?, budget_first? }`. `blockers`: `{ title, text, refs? }`. `risks`: `{ title, text, check? }`.
+- `latest_batch`: optional `{ date, results: [{ angle, agent?, outcome, text }] }`. `lessons`: `{ id, pattern, evidence, check }`. `calibration`: `{ name, candidate, estimate, judge, outcome }`, plus optional `calibration_notes` strings. Label predictions and actual review mode; never backfill predictions or replace missing review scores.
+- `audits`: `{ date, rounds?, finding, edits? }`; recommendations without authorization are not applied edits.
 
-From the repository root, after copying into the authorized directory:
+Acceptance requires the configured pass rule and all hard constraints, with mode-appropriate evidence. The default requires all section thresholds; an explicit custom rule is displayed rather than silently replaced or interpreted by the atlas. No display total creates PASS. A high-score summary without the warranted original review is not approval.
+
+“Best” is the highest **total across comparable scored sections**, for display only. It is not another score/gate or a compensating acceptance rule. Different section sets, rubrics, thresholds, audiences, modes, or constraints make totals unsuitable as controlled comparisons; retain caveats in `meta.standing`/`standard` and calibration. Preserve original receipts if the user changes criteria rather than silently converting old history. Potential scores are not measured success.
+
+All file/source links resolve relative to the loop directory and generated page, not the repository or shell. Do not invent links to nonexistent reports. Fictional source labels stay no-link and explicitly fictional.
+
+## Render explicitly
+
+From the repository root:
 
 ```sh
 node tools/ui.mjs atlas --dir <loop-dir> --check --no-open
 node tools/ui.mjs atlas --dir <loop-dir>
 ```
 
-The first checks map/data coverage and renders without opening; the second opens the static atlas. The CLI reads local files and writes `atlas.html`; it does not fetch sources, perform research, watch files, run agents, or continuously update anything. Rerun explicitly after authorized edits. `--check` checks coverage/renderer consistency, not research truth or independent approval.
+`--check` validates data/map consistency before writing and refuses missing or stale angle rows, leaving previous HTML untouched. It does not verify truth or independent approval. The command reads explicitly selected local files and writes static HTML; it performs no research, network access, agents, runtime directory scans, watching, or automatic updates. Rerun after authorized changes. Empty areas, angles, and rounds render a fresh atlas without invented activity.
